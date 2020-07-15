@@ -1,0 +1,96 @@
+@page "/CreateChampionship"
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Db.Repository
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+@inject CompetitorRepository CompetitorRepository
+@inject ChampionshipRepository ChampionshipRepository
+@inject OrganizerRepository OrganizerRepository
+
+Create new championship
+
+<EditForm Model="@_championship" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <InputText id="name" @bind-Value="_championship.Name"/>
+
+<div class="multiple-selector">
+    <ul class="selectable-ul">
+        @foreach (var item in NoSelected)
+        {
+            <li @onclick="@(() => Select(item))">@item.Name</li>
+        }
+    </ul>
+    <div class="multiple-selector-buttons">
+        <button type="button" @onclick="SelectAll">>></button>
+        <button type="button" @onclick="DeselectAll">@removeAllText</button>
+    </div>
+    <ul class="selectable-ul">
+        @foreach (var item in Selected)
+        {
+            <li @onclick="@(() => Deselect(item))">@item.Name</li>
+        }
+    </ul>
+</div>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@code{
+
+    private Organizer Organizer { get; set; }
+    private readonly Championship _championship = new Championship();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        Organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name, new List<string> {nameof(Db.Models.Organizer.Skills)}).Single();
+        _championship.IsFinished = false;
+        _championship.Organizer = Organizer;
+        _championship.Competitors = new List<Competitor>();
+        _championship.Tournaments = new List<Tournament>();
+        
+        Selected.AddRange(Organizer.Competitors);
+    }
+
+    private void HandleValidSubmit()
+    {
+        _championship.Competitors.AddRange(Selected);
+        var id = ChampionshipRepository.Create(_championship);
+        NavigationManager.NavigateTo($"Championship/{id.ToString()}");
+    }
+    
+    private string removeAllText = "<<";
+    
+    public List<Competitor> NoSelected { get; set; } = new List<Competitor>();
+    public List<Competitor> Selected { get; set; } = new List<Competitor>();
+
+    private void Select(Competitor item)
+    {
+        NoSelected.Remove(item);
+        Selected.Add(item);
+    }
+
+    private void Deselect(Competitor item)
+    {
+        Selected.Remove(item);
+        NoSelected.Add(item);
+    }
+
+    private void SelectAll()
+    {
+        Selected.AddRange(NoSelected);
+        NoSelected.Clear();
+    }
+
+    private void DeselectAll()
+    {
+        NoSelected.AddRange(Selected);
+        Selected.Clear();
+    }
+
+}

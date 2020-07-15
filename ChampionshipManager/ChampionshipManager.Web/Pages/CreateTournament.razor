@@ -1,0 +1,113 @@
+@page "/CreateTournament/{ChampionshipId}"
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Db.Repository
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+@inject CompetitorRepository CompetitorRepository
+@inject TournamentRepository TournamentRepository
+@inject OrganizerRepository OrganizerRepository
+
+Create new championship
+
+<EditForm Model="@_tournament" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <InputText id="name" @bind-Value="_tournament.Name"/>
+    <InputSelect id="tournamentType" @bind-Value="_tournament.TournamentType">
+        @foreach (var item in Enum.GetNames(typeof(TournamentType)))
+        {
+            <option value="@item">@item</option>
+        }
+    </InputSelect>
+
+    <div class="multiple-selector">
+        <ul class="selectable-ul">
+            @foreach (var item in NoSelected)
+            {
+                <li @onclick="@(() => Select(item))">@item.Name</li>
+            }
+        </ul>
+        <div class="multiple-selector-buttons">
+            <button type="button" @onclick="SelectAll">>></button>
+            <button type="button" @onclick="DeselectAll">@removeAllText</button>
+        </div>
+        <ul class="selectable-ul">
+            @foreach (var item in Selected)
+            {
+                <li @onclick="@(() => Deselect(item))">@item.Name</li>
+            }
+        </ul>
+    </div>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@code{
+
+    [Parameter]
+    public string ChampionshipId { get; set; }
+
+    private Organizer Organizer { get; set; }
+    private readonly Tournament _tournament = new Tournament();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        Organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name, new List<string> {nameof(Db.Models.Organizer.Skills)}).Single();
+        
+        SetupTournament();
+        
+    }
+
+    private void SetupTournament()
+    {
+        var championship =  Organizer.Championships.Single(c => c.ID.ToString() == ChampionshipId);
+        
+        Selected.AddRange(championship.Competitors);
+        _tournament.Championship = championship;
+        _tournament.Competitors = new List<Competitor>();
+        _tournament.Games = new List<Game>();
+        _tournament.IsFinished = false;
+    }
+
+    private void HandleValidSubmit()
+    {
+        _tournament.Competitors = Selected;
+        var id = TournamentRepository.Create(_tournament);
+        NavigationManager.NavigateTo($"Tournament/{ChampionshipId}/{id.ToString()}");
+    }
+
+    private string removeAllText = "<<";
+
+    public List<Competitor> NoSelected { get; set; } = new List<Competitor>();
+    public List<Competitor> Selected { get; set; } = new List<Competitor>();
+
+    private void Select(Competitor item)
+    {
+        NoSelected.Remove(item);
+        Selected.Add(item);
+    }
+
+    private void Deselect(Competitor item)
+    {
+        Selected.Remove(item);
+        NoSelected.Add(item);
+    }
+
+    private void SelectAll()
+    {
+        Selected.AddRange(NoSelected);
+        NoSelected.Clear();
+    }
+
+    private void DeselectAll()
+    {
+        NoSelected.AddRange(Selected);
+        Selected.Clear();
+    }
+
+}

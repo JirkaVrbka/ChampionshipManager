@@ -1,0 +1,49 @@
+@page "/Tournament/{ChamId}/{ID}"
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Db.Repository
+
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject OrganizerRepository OrganizerRepository
+@inject ChampionshipRepository ChampionshipRepository
+@inject TournamentRepository TournamentRepository
+
+@if (Tournament == null)
+{
+    <div>Something went wrong, please go <a href="/Championship/@ChamId">back</a></div>
+}
+else
+{
+    <h3>@Tournament.Name</h3>
+    @foreach (var competitor in Tournament.Competitors)
+    {
+        <div>@competitor.Name</div>
+    }
+    <br/>
+    <div><a href="/Championship/@ChamId">Back</a></div>
+}
+
+
+@code{
+
+    [Parameter]
+    public string ChamId { get; set; }
+
+    [Parameter]
+    public string ID { get; set; }
+    
+
+    private Tournament? Tournament { get; set; }
+
+    private Organizer Organizer { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (Guid.TryParse(ID, out Guid parsedTournamentId) && 
+            Guid.TryParse(ChamId, out Guid parsedChampionshipId))
+        {
+            Tournament = TournamentRepository.Filter(c => c.ID == parsedTournamentId && c.Championship.ID == parsedChampionshipId).SingleOrDefault();
+        }
+    }
+
+}

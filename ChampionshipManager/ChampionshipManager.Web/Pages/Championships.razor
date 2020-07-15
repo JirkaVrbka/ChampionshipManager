@@ -1,0 +1,34 @@
+@page "/Championships"
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Db.Repository
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject OrganizerRepository OrganizerRepository
+@inject ChampionshipRepository ChampionshipRepository
+
+
+<a href="/CreateChampionship">Create new Championship</a>
+
+<h4>Championships in progress</h4>
+@foreach (var championship in Organizer.Championships.Where(c => !c.IsFinished))
+{
+    <a href = "/Championship/@championship.ID" style="padding-left: 5em">@championship.Name</a>
+}
+
+<h4>Championships finished</h4>
+@foreach (var championship in Organizer.Championships.Where(c => c.IsFinished))
+{
+    <a href = "/Championship/@championship.ID" style="padding-left: 5em">@championship.Name</a>
+}
+
+@code
+{
+    private Organizer Organizer { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        Organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name).Single();
+    }
+
+}

@@ -1,0 +1,41 @@
+@page "/Skills"
+@using ChampionshipManager.Db.Models
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Db.Repository.OrganizerRepository OrganizerRepository
+
+<AuthorizeView>
+    <Authorized>
+        <CreateSkill Refresh="@Refresh"/>
+        
+        <br/>
+        <br/>
+        Created skills: <br/>
+        @foreach (var skill in Organizer.Skills)
+        {
+            @skill.Name<br/>
+            
+            <div style="padding-left: 5em">@skill.Order</div><br/>
+        }
+    </Authorized>
+
+
+    <NotAuthorized>
+        Please log in.
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    private Organizer Organizer { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        Organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name).Single();
+    }
+
+    private void Refresh()
+    {
+        StateHasChanged();
+    }
+}

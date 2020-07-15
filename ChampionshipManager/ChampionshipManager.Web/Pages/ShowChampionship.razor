@@ -1,0 +1,55 @@
+@page "/Championship/{ID}"
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Db.Repository
+
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject OrganizerRepository OrganizerRepository
+@inject ChampionshipRepository ChampionshipRepository
+
+@if (CurrentChampionship == null)
+{
+    <div>Something went wrong, please go <a href="/Championships">back</a></div>
+}
+else
+{
+    <h3>@CurrentChampionship.Name</h3>
+    <a href="/CreateTournament/@CurrentChampionship.ID.ToString()">Create new Tournament</a>
+    <h4>People</h4>   
+    @foreach (var person in CurrentChampionship.Competitors)
+    {
+        <div style="padding-left: 5em">@person.Name</div>
+    }
+    <h4>Tournaments in progress</h4>
+@foreach (var tournament in CurrentChampionship.Tournaments.Where(t => !t.IsFinished))
+{
+    <a href = "/Tournament/@tournament.ID" style="padding-left: 5em">@tournament.Name</a>
+}
+
+    <h4>Tournaments finished</h4>
+@foreach (var tournament in CurrentChampionship.Tournaments.Where(t => t.IsFinished))
+{
+    <a href = "/Tournament/@tournament.ID" style="padding-left: 5em">@tournament.Name</a>
+}
+}
+
+
+@code{
+    [Parameter]
+    public string ID { get; set; }
+
+    private Championship? CurrentChampionship { get; set; }
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        var organizerId = OrganizerRepository.GetIdByName(user.Identity.Name);
+
+        if (Guid.TryParse(ID, out Guid parsedId))
+        {
+            CurrentChampionship = ChampionshipRepository.Filter(c => c.ID == parsedId && c.Organizer.ID == organizerId).SingleOrDefault();
+        }
+    }
+
+}

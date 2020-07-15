@@ -1,0 +1,49 @@
+@page "/Competitors"
+@using ChampionshipManager.Db.Models
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Db.Repository.OrganizerRepository OrganizerRepository
+
+<AuthorizeView>
+    <Authorized>
+        <CreateCompetitor Refresh="@StateHasChanged"/>
+        
+        <br/>
+        <br/>
+        Competitors: <br/>
+        @foreach (var competitor in Organizer.Competitors)
+        {
+            <br/>
+            @competitor.Name
+            <br/>
+            
+            @if (Organizer.BirthEnabled)
+            {
+                <div style="padding-left: 5em">@competitor.BirthDate</div>
+            }
+            @if (Organizer.GenderEnabled)
+            {
+                <div style="padding-left: 5em">@competitor.Gender</div>
+            }
+            @if (Organizer.SkillsEnabled)
+            {
+                <div style="padding-left: 5em">@competitor.Skill.Name</div>
+            }
+        }
+    </Authorized>
+
+
+    <NotAuthorized>
+        Please log in.
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    private Organizer Organizer { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        Organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name).Single();
+    }
+}

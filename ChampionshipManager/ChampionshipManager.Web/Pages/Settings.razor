@@ -1,0 +1,48 @@
+@page "/Settings"
+@using ChampionshipManager.Db.Models
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Db.Repository.OrganizerRepository OrganizerRepository
+
+<AuthorizeView>
+    <Authorized>
+        
+        
+        
+        Enabled competitors trades:<br/>
+        <input name="age" type="checkbox" checked="@Organizer.AgeEnabled" @onclick="ChangeAgeEnabled"/>Age<br/>
+        <input name="birth" type="checkbox" checked="@Organizer.BirthEnabled" @onclick="ChangeBirthEnabled"/>Birth date<br/>
+        <input name="gender" type="checkbox" checked="@Organizer.GenderEnabled" @onclick="ChangeGenderEnabled"/>Gender<br/>
+        <input name="skills" type="checkbox" checked="@Organizer.SkillsEnabled" @onclick="ChangeSkillEnabled"/>Skills<br/>
+        <button @onclick="OnSaveClick">Save</button>
+        <div style="display:@_isSaved">Saved</div>
+    </Authorized>
+
+
+    <NotAuthorized>
+        Please log in.
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    private Organizer Organizer { get; set; }
+    private string _isSaved = "none;";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        Organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name, null).Single();
+    }
+    
+    void OnSaveClick()
+    {
+        OrganizerRepository.Edit(Organizer);
+        _isSaved = "block;";
+    }
+
+    void ChangeAgeEnabled() => Organizer.AgeEnabled = !Organizer.AgeEnabled;
+    void ChangeBirthEnabled() => Organizer.BirthEnabled = !Organizer.BirthEnabled;
+    void ChangeSkillEnabled() => Organizer.SkillsEnabled = !Organizer.SkillsEnabled;
+    void ChangeGenderEnabled() => Organizer.GenderEnabled = !Organizer.GenderEnabled;
+
+}

@@ -1,0 +1,82 @@
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Db.Repository
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject CompetitorRepository CompetitorRepository
+@inject SkillRepository SkillRepository
+@inject OrganizerRepository OrganizerRepository
+
+Create new competitor
+
+<EditForm Model="@_competitor" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <InputText id="name" @bind-Value="_competitor.Name"/>
+
+    @if (_organizer.BirthEnabled)
+    {
+        <InputDate id="birth" @bind-Value="_competitor.BirthDate"/>
+    }
+    @if (_organizer.GenderEnabled)
+    {
+        <InputSelect id="gender" @bind-Value="_competitor.Gender">
+            @foreach (var item in Enum.GetNames(typeof(Gender)))
+            {
+                <option value="@item">@item</option>
+            }
+        </InputSelect>
+    }
+    @if (_organizer.SkillsEnabled)
+    {
+        <InputSelect id="skill" @bind-Value="_skillId">
+            @foreach (var item in _organizer.Skills)
+            {
+                <option value="@item.ID.ToString()">@item.Name</option>
+            }
+        </InputSelect>
+    }
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@code{
+
+    [Parameter]
+    public Action Refresh { get; set; }
+
+    private Organizer _organizer;
+    private Competitor _competitor = new Competitor();
+    private string _skillId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        _organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name, new List<string> {nameof(Organizer.Skills)}).Single();
+        SetUpNewCompetitor();
+    }
+
+    private void HandleValidSubmit()
+    {
+        if (_skillId != null)
+        {
+            var skill = SkillRepository.Filter(s => s.ID == Guid.Parse(_skillId) && s.Organizer.ID == _organizer.ID).SingleOrDefault();
+            _competitor.Skill = skill;
+        }
+        
+        CompetitorRepository.Create(_competitor);
+        SetUpNewCompetitor();
+        Refresh.Invoke();
+    }
+
+    private void SetUpNewCompetitor()
+    {
+        _competitor = new Competitor
+        {
+            Organizer = _organizer,
+            Gender = Gender.Unknown
+        };
+    }
+
+}
