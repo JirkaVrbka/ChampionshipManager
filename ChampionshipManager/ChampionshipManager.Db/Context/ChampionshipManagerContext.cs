@@ -1,3 +1,4 @@
+using System;
 using ChampionshipManager.Db.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +12,10 @@ namespace ChampionshipManager.Db.Context
         public DbSet<Championship> Championships { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<Tournament> Tournaments { get; set; }
-
+        
         public ChampionshipManagerContext(DbContextOptions<ChampionshipManagerContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
-        
     }
 }

@@ -1,0 +1,16 @@
+using System.Collections.Generic;
+using ChampionshipManager.Db.Context;
+using ChampionshipManager.Db.Models;
+
+namespace ChampionshipManager.Db.Repository
+{
+    public class CompetitorRepository : ASpecificEntityRepository<Competitor>
+    {
+        protected override List<string> Includes { get; } = new List<string>
+            {nameof(Competitor.Skill), nameof(Competitor.Organizer)};
+
+        public CompetitorRepository(ChampionshipManagerContext context) : base(context)
+        {
+        }
+    }
+}

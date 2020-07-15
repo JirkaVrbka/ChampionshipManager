@@ -13,10 +13,11 @@ namespace ChampionshipManager.Db.Repository
 
         public Repository(ChampionshipManagerContext context) => _context = context;
 
-        public void Create(TEntity entity)
+        public Guid Create(TEntity entity)
         {
-            _context.Set<TEntity>().Add(entity);
+            var createdEntity = _context.Set<TEntity>().Add(entity);
             SaveChanges();
+            return createdEntity.Entity.ID;
         }
 
         public void Delete(TEntity entity)

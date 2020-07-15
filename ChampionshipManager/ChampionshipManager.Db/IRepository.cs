@@ -5,7 +5,7 @@ namespace ChampionshipManager.Db
 {
     public interface IRepository<TEntity> where TEntity : IEntity
     {
-        void Create(TEntity entity);
+        Guid Create(TEntity entity);
         void Delete(TEntity entity);
         void Delete(Guid id);
         void Edit(TEntity entity);
