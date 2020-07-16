@@ -1,7 +1,9 @@
 @page "/Skills"
 @using ChampionshipManager.Db.Models
+@using ChampionshipManager.Web.Utils
+@using ChampionshipManager.BusinessLayer.Services
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject Db.Repository.OrganizerRepository OrganizerRepository
+@inject OrganizerService OrganizerService
 
 <AuthorizeView>
     <Authorized>
@@ -10,7 +12,7 @@
         <br/>
         <br/>
         Created skills: <br/>
-        @foreach (var skill in Organizer.Skills)
+        @foreach (var skill in AllSkills)
         {
             @skill.Name<br/>
             
@@ -26,12 +28,12 @@
 
 @code
 {
-    private Organizer Organizer { get; set; }
+    private List<Skill> AllSkills { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        Organizer = OrganizerRepository.FilterWithIncludes(organizer => organizer.Name == user.Identity.Name).Single();
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        AllSkills = OrganizerService.GetSkillsByName(organizerName);
     }
 
     private void Refresh()

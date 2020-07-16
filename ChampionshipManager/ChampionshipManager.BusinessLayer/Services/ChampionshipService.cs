@@ -24,5 +24,10 @@ namespace ChampionshipManager.BusinessLayer.Services
                 : null;
         }
 
+        public Guid Create(Championship championship)
+        {
+            return _repository.Create(championship);
+        }
+
     }
 }

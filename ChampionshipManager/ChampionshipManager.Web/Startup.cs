@@ -59,6 +59,7 @@ namespace ChampionshipManager.Web
 
             services.AddSingleton<OrganizerService>();
             services.AddSingleton<ChampionshipService>();
+            services.AddSingleton<SkillService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

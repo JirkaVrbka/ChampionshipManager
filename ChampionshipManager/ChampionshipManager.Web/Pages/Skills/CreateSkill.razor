@@ -1,9 +1,10 @@
-@using ChampionshipManager.Db.Repository
 @using ChampionshipManager.Db.Models
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject SkillRepository SkillRepository
-@inject OrganizerRepository OrganizerRepository
+@inject SkillService SkillService
+@inject OrganizerService OrganizerService
 
         Create new skill:<br/>
 
@@ -23,19 +24,17 @@
     [Parameter]
     public Action Refresh { get; set; }
 
-    private Organizer _organizer;
     private Skill _skill = new Skill();
     
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        _organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name, new List<string>{ nameof(Organizer.Skills)}).Single();
-        _skill.Organizer = _organizer;
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        _skill.Organizer = OrganizerService.GetByName(organizerName);
     }
 
     private void HandleValidSubmit()
     {
-        SkillRepository.Create(_skill);
+        SkillService.Create(_skill);
         Refresh?.Invoke();
     }
 
