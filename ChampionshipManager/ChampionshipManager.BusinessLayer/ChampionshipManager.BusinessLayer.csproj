@@ -5,10 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Facades" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\ChampionshipManager.Db\ChampionshipManager.Db.csproj" />
     </ItemGroup>
 

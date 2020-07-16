@@ -1,0 +1,56 @@
+@page "/CreateChampionship"
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Db.Repository
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+@inject CompetitorRepository CompetitorRepository
+@inject ChampionshipRepository ChampionshipRepository
+@inject OrganizerRepository OrganizerRepository
+@inject OrganizerService OrganizerService
+
+Create new championship
+
+<EditForm Model="@_championship" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <InputText id="name" @bind-Value="_championship.Name"/>
+
+     <SelectMultipleCompetitorsComponent Selected="@Selected" ></SelectMultipleCompetitorsComponent>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@code{
+    
+    public List<Competitor> Selected { get; set; } = new List<Competitor>();
+
+    private readonly Championship _championship = new Championship
+    {
+        IsFinished = false,
+        Competitors = new List<Competitor>(),
+        Tournaments = new List<Tournament>()
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var organizerName = await AuthenticationStateProvider.GetUserIdentity();
+        Selected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
+        
+        _championship.Organizer = OrganizerService.GetByName(organizerName);
+    }
+
+    private void HandleValidSubmit()
+    {
+        _championship.Competitors.AddRange(Selected);
+
+        var createChampionshipId = ChampionshipRepository.Create(_championship);
+        NavigationManager.NavigateTo($"Championship/{createChampionshipId.ToString()}");
+    }
+
+}

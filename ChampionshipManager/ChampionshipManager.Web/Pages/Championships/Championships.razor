@@ -1,34 +1,37 @@
 @page "/Championships"
 @using ChampionshipManager.Db.Models
 @using ChampionshipManager.Db.Repository
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject OrganizerRepository OrganizerRepository
+@inject OrganizerService OrganizerService
 @inject ChampionshipRepository ChampionshipRepository
 
 
 <a href="/CreateChampionship">Create new Championship</a>
 
 <h4>Championships in progress</h4>
-@foreach (var championship in Organizer.Championships.Where(c => !c.IsFinished))
+@foreach (var championship in AllChampionships.Where(c => !c.IsFinished))
 {
     <a href = "/Championship/@championship.ID" style="padding-left: 5em">@championship.Name</a>
 }
 
 <h4>Championships finished</h4>
-@foreach (var championship in Organizer.Championships.Where(c => c.IsFinished))
+@foreach (var championship in AllChampionships.Where(c => c.IsFinished))
 {
     <a href = "/Championship/@championship.ID" style="padding-left: 5em">@championship.Name</a>
 }
 
 @code
 {
-    private Organizer Organizer { get; set; }
+    private List<Championship> AllChampionships { get; set; }
     
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        Organizer = OrganizerRepository.FilterWithIncludes(organizer => organizer.Name == user.Identity.Name).Single();
+        var organizerName = await AuthenticationStateProvider.GetUserIdentity();
+        AllChampionships = OrganizerService.GetChampionshipsByName(organizerName);
     }
 
 }

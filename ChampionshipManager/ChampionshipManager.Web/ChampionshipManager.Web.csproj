@@ -21,22 +21,31 @@
       <Content Update="Pages\Settings.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
-      <Content Update="Pages\Competitors.razor">
+      <Content Update="Pages\Championships\ShowChampionship.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
-      <Content Update="Pages\Skills.razor">
+      <Content Update="Pages\Championships\CreateChampionship.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
-      <Content Update="Pages\CreateSkill.razor">
+      <Content Update="Pages\Championships\Championships.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
-      <Content Update="Pages\CreateCompetitor.razor">
+      <Content Update="Pages\Tournaments\CreateTournament.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
-      <Content Update="Pages\Championships.razor">
+      <Content Update="Pages\Tournaments\ShowTournament.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
-      <Content Update="Pages\ShowChampionship.razor">
+      <Content Update="Pages\Skills\CreateSkill.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\Skills\Skills.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\Competitors\Competitors.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\Competitors\CreateCompetitor.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
     </ItemGroup>
@@ -44,10 +53,6 @@
     <ItemGroup>
       <ProjectReference Include="..\ChampionshipManager.BusinessLayer\ChampionshipManager.BusinessLayer.csproj" />
       <ProjectReference Include="..\ChampionshipManager.Db\ChampionshipManager.Db.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Pages\Create" />
     </ItemGroup>
 
 </Project>

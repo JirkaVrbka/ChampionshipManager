@@ -1,0 +1,54 @@
+@using ChampionshipManager.Db.Models
+<div class="multiple-selector">
+    <ul class="selectable-ul">
+        @foreach (var item in NoSelected)
+        {
+            <li @onclick="@(() => Select(item))">@item.Name</li>
+        }
+    </ul>
+    <div class="multiple-selector-buttons">
+        <button type="button" @onclick="SelectAll">>></button>
+        <button type="button" @onclick="DeselectAll">@removeAllText</button>
+    </div>
+    <ul class="selectable-ul">
+        @foreach (var item in Selected)
+        {
+            <li @onclick="@(() => Deselect(item))">@item.Name</li>
+        }
+    </ul>
+</div>
+
+@code{
+    
+    
+    private string removeAllText = "<<";
+    
+    public List<Competitor> NoSelected { get; set; } = new List<Competitor>();
+    [Parameter]
+    public List<Competitor> Selected { get; set; } = new List<Competitor>();
+
+    private void Select(Competitor item)
+    {
+        NoSelected.Remove(item);
+        Selected.Add(item);
+    }
+
+    private void Deselect(Competitor item)
+    {
+        Selected.Remove(item);
+        NoSelected.Add(item);
+    }
+
+    private void SelectAll()
+    {
+        Selected.AddRange(NoSelected);
+        NoSelected.Clear();
+    }
+
+    private void DeselectAll()
+    {
+        NoSelected.AddRange(Selected);
+        Selected.Clear();
+    }
+
+}

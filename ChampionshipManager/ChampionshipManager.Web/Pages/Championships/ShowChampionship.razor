@@ -6,7 +6,7 @@
 
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject OrganizerService OrganizerService
+@inject ChampionshipService ChampionshipService
 @inject ChampionshipRepository ChampionshipRepository
 
 @if (CurrentChampionship == null)
@@ -45,15 +45,7 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        var identity = await AuthenticationStateProvider.GetUserIdentity();
-        CurrentChampionship = OrganizerService.GetChampionshipWithIncludes(identity, Id);
-        
-        // var organizerId = OrganizerService.GetIdByName(await AuthenticationStateProvider.GetUserIdentity());
-        //
-        // if (Guid.TryParse(Id, out Guid parsedId))
-        // {
-        //     CurrentChampionship = OrganizerService.GetChampionships(organizerId).SingleOrDefault(c => c.ID == parsedId); //ChampionshipRepository.FilterWithIncludes(c => c.ID == parsedId && c.Organizer.ID == organizerId).SingleOrDefault();
-        // }
+        CurrentChampionship = ChampionshipService.GetWithIncludes(Id);
     }
 
 }
