@@ -4,16 +4,14 @@ using ChampionshipManager.Db.Models;
 
 namespace ChampionshipManager.Db.Repository
 {
-    public class CompetitorRepository : ASpecificEntityRepository<Competitor>
+    public class GameRepository : ASpecificEntityRepository<Game>
     {
         public override List<string> Includes { get; } = new List<string>
         {
-            nameof(Competitor.Skill), 
-            nameof(Competitor.Organizer),
-            nameof(Competitor.Team)
+            nameof(Game.Tournament)
         };
 
-        public CompetitorRepository(IContextProvider provider) : base(provider)
+        public GameRepository(IContextProvider provider) : base(provider)
         {
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ChampionshipManager.Db.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,48 +10,57 @@ namespace ChampionshipManager.Db.Repository
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity
     {
-        private readonly ChampionshipManagerContext _context;
+        protected ChampionshipManagerContext Context => _provider.GetUnitOfWorkInstance();
 
-        public Repository(ChampionshipManagerContext context) => _context = context;
+        private readonly IContextProvider _provider;
+
+        public Repository(IContextProvider provider) => _provider = provider;
 
         public Guid Create(TEntity entity)
         {
-            var createdEntity = _context.Set<TEntity>().Add(entity);
+            var createdEntity = Context.Set<TEntity>().Add(entity);
             SaveChanges();
             return createdEntity.Entity.ID;
         }
 
         public void Delete(TEntity entity)
         {
-            _context.Set<TEntity>().Remove(entity);
+            Context.Set<TEntity>().Remove(entity);
             SaveChanges();
         }
 
         public void Delete(Guid id)
         {
-            var entityToDelete = _context.Set<TEntity>().FirstOrDefault(e => e.ID == id);
+            var entityToDelete = Context.Set<TEntity>().FirstOrDefault(e => e.ID == id);
             if (entityToDelete != null)
             {
-                _context.Set<TEntity>().Remove(entityToDelete);
+                Context.Set<TEntity>().Remove(entityToDelete);
                 SaveChanges();
             }
         }
 
         public void Edit(TEntity entity)
         {
-            var editedEntity = _context.Set<TEntity>().FirstOrDefault(e => e.ID == entity.ID);
+            var editedEntity = Context.Set<TEntity>().FirstOrDefault(e => e.ID == entity.ID);
             editedEntity = entity;
             SaveChanges();
         }
 
+        public async Task EditAsync(TEntity entity)
+        {
+            var editedEntity = Context.Set<TEntity>().FirstOrDefault(e => e.ID == entity.ID);
+            editedEntity = entity;
+            await SaveChangesAsync();
+        }
+
         public TEntity GetById(Guid id)
         {
-            return _context.Set<TEntity>().FirstOrDefault(e => e.ID == id);
+            return Context.Set<TEntity>().FirstOrDefault(e => e.ID == id);
         }
 
         public IEnumerable<TEntity> Filter(IList<string> includes = null)
         {
-            IQueryable<TEntity> query = _context.Set<TEntity>();
+            IQueryable<TEntity> query = Context.Set<TEntity>();
 
             if (includes != null)
             {
@@ -65,7 +75,7 @@ namespace ChampionshipManager.Db.Repository
 
         public IEnumerable<TEntity> Filter(Func<TEntity, bool> predicate, IList<string> includes = null)
         {
-            IQueryable<TEntity> query = _context.Set<TEntity>();
+            IQueryable<TEntity> query = Context.Set<TEntity>();
 
             if (includes != null)
             {
@@ -78,6 +88,7 @@ namespace ChampionshipManager.Db.Repository
             return query.AsEnumerable().Where(predicate);
         }
 
-        public void SaveChanges() => _context.SaveChanges();
+        public void SaveChanges() => Context.SaveChanges();
+        public async Task SaveChangesAsync() => await Context.SaveChangesAsync();
     }
 }

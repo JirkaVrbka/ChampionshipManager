@@ -1,11 +1,12 @@
+using System;
 using ChampionshipManager.Db.Models;
 using ChampionshipManager.Db.Repository;
 
 namespace ChampionshipManager.BusinessLayer.Services
 {
-    public class SkillService : AService<Skill>
+    public class CompetitorService: AService<Competitor>
     {
-        public SkillService() : base((provider) => new SkillRepository(provider))
+        public CompetitorService() : base((provider) => new CompetitorRepository(provider))
         {
         }
     }

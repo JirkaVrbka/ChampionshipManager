@@ -1,19 +1,19 @@
 using System.Collections.Generic;
 using ChampionshipManager.Db.Context;
 using ChampionshipManager.Db.Models;
+using System.Linq;
 
 namespace ChampionshipManager.Db.Repository
 {
-    public class CompetitorRepository : ASpecificEntityRepository<Competitor>
+    public class TeamRepository : ASpecificEntityRepository<Team>
     {
         public override List<string> Includes { get; } = new List<string>
         {
-            nameof(Competitor.Skill), 
-            nameof(Competitor.Organizer),
-            nameof(Competitor.Team)
+            nameof(Team.Competitors),
+            nameof(Team.Organizer)
         };
 
-        public CompetitorRepository(IContextProvider provider) : base(provider)
+        public TeamRepository(IContextProvider provider) : base(provider)
         {
         }
     }

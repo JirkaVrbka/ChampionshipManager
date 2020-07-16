@@ -3,10 +3,11 @@ using ChampionshipManager.Db.Repository;
 
 namespace ChampionshipManager.BusinessLayer.Services
 {
-    public class SkillService : AService<Skill>
+    public class TeamService : AService<Team>
     {
-        public SkillService() : base((provider) => new SkillRepository(provider))
+        public TeamService() : base((provider) => new TeamRepository(provider))
         {
         }
+        
     }
 }

@@ -3,9 +3,9 @@ using ChampionshipManager.Db.Repository;
 
 namespace ChampionshipManager.BusinessLayer.Services
 {
-    public class SkillService : AService<Skill>
+    public class GameService : AService<Game>
     {
-        public SkillService() : base((provider) => new SkillRepository(provider))
+        public GameService() : base((provider) => new GameRepository(provider))
         {
         }
     }

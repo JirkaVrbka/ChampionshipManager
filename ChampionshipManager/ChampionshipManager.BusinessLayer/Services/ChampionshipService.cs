@@ -8,25 +8,28 @@ namespace ChampionshipManager.BusinessLayer.Services
 {
     public class ChampionshipService : AService<Championship>
     {
-        public ChampionshipService(ChampionshipRepository repository) : base(repository)
+        public ChampionshipService() : base((provider) => new ChampionshipRepository(provider))
         {
-        }
-
-        public Championship GetWithIncludes(Guid championshipId)
-        {
-            return _repository.FilterWithIncludes(c => c.ID == championshipId).Single();
         }
         
-        public Championship GetWithIncludes(string championshipId)
+        public Championship GetWithCompetitors(Guid championshipId)
+        {
+            return GetWithIncludes(championshipId, new List<string>{nameof(Championship.Competitors)});
+        }
+        
+        public Championship GetWithCompetitors(string championshipId)
         {
             return Guid.TryParse(championshipId, out var championshipGuid) 
-                ? GetWithIncludes(championshipGuid) 
+                ? GetWithCompetitors(championshipGuid) 
                 : null;
         }
-
-        public Guid Create(Championship championship)
+        
+        private Championship GetWithIncludes(Guid championshipId, List<string> includes = null)
         {
-            return _repository.Create(championship);
+            using (ContextProvider.Create())
+            {
+                return Repository.Filter(c => c.ID == championshipId, includes).Single();
+            }
         }
 
     }

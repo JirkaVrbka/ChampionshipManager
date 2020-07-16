@@ -15,6 +15,8 @@ namespace ChampionshipManager.Db.Models
 
         [Required]
         public Organizer Organizer { get; set; }
+
+        public Team Team { get; set; }
     }
 
     public enum Gender

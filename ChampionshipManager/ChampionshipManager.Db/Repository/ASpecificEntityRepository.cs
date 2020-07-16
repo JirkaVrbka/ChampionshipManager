@@ -9,7 +9,7 @@ namespace ChampionshipManager.Db.Repository
     {
         public abstract List<string> Includes { get; }
 
-        protected ASpecificEntityRepository(ChampionshipManagerContext context) : base(context)
+        protected ASpecificEntityRepository(IContextProvider provider) : base(provider)
         {
         }
         

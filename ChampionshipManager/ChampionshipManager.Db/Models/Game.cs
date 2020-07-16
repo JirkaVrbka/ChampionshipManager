@@ -12,6 +12,8 @@ namespace ChampionshipManager.Db.Models
         public int PlayerTwoScore { get; set; }
 
         public Winner Winner { get; set; }
+
+        public Tournament Tournament { get; set; }
     }
 
     public enum Winner
