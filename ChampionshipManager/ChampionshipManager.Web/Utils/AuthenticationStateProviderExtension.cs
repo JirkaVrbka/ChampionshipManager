@@ -5,7 +5,7 @@ namespace ChampionshipManager.Web.Utils
 {
     public static class AuthenticationStateProviderExtension
     {
-        public static async Task<string> GetUserIdentity(this AuthenticationStateProvider provider)
+        public static async Task<string> GetUserName(this AuthenticationStateProvider provider)
         {
             var user = (await provider.GetAuthenticationStateAsync()).User;
             return user.Identity.Name;

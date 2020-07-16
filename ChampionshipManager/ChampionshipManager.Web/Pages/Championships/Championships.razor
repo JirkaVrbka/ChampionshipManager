@@ -30,7 +30,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-        var organizerName = await AuthenticationStateProvider.GetUserIdentity();
+        var organizerName = await AuthenticationStateProvider.GetUserName();
         AllChampionships = OrganizerService.GetChampionshipsByName(organizerName);
     }
 

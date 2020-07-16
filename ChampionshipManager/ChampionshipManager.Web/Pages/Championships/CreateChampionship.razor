@@ -7,9 +7,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 
-@inject CompetitorRepository CompetitorRepository
-@inject ChampionshipRepository ChampionshipRepository
-@inject OrganizerRepository OrganizerRepository
+@inject ChampionshipService ChampionshipService
 @inject OrganizerService OrganizerService
 
 Create new championship
@@ -39,7 +37,7 @@ Create new championship
 
     protected override async Task OnInitializedAsync()
     {
-        var organizerName = await AuthenticationStateProvider.GetUserIdentity();
+        var organizerName = await AuthenticationStateProvider.GetUserName();
         Selected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
         
         _championship.Organizer = OrganizerService.GetByName(organizerName);
@@ -49,7 +47,7 @@ Create new championship
     {
         _championship.Competitors.AddRange(Selected);
 
-        var createChampionshipId = ChampionshipRepository.Create(_championship);
+        var createChampionshipId = ChampionshipService.Create(_championship);
         NavigationManager.NavigateTo($"Championship/{createChampionshipId.ToString()}");
     }
 
