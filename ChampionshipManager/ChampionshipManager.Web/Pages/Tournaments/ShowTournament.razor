@@ -1,48 +1,53 @@
-@page "/Tournament/{ChamId}/{ID}"
+@page "/Tournament/{ChampionshipId}/{TournamentId}"
 @using ChampionshipManager.Db.Models
-@using ChampionshipManager.Db.Repository
+@using ChampionshipManager.BusinessLayer.Services
 
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject OrganizerRepository OrganizerRepository
-@inject ChampionshipRepository ChampionshipRepository
-@inject TournamentRepository TournamentRepository
+@inject TournamentService TournamentService
 
-@if (Tournament == null)
+@if (_tournament == null)
 {
-    <div>Something went wrong, please go <a href="/Championship/@ChamId">back</a></div>
+    <div>Something went wrong, please go <a href="/Championship/@ChampionshipId">back</a></div>
 }
 else
 {
-    <h3>@Tournament.Name</h3>
-    @foreach (var competitor in Tournament.Competitors)
+    <h3>@_tournament.Name</h3>
+    <div>Competitors:</div>
+    @foreach (var competitor in _tournament.Competitors)
     {
         <div>@competitor.Name</div>
     }
     <br/>
-    <div><a href="/Championship/@ChamId">Back</a></div>
+    
+    <div>Games:</div>
+    @foreach (var game in _tournament.Games)
+    {
+        <div>@game.PlayerOne.Name againts @game.PlayerTwo.Name</div>
+        <div>@game.PlayerOneScore : @game.PlayerTwoScore</div>
+    }
+    
+    <div><a href="/Championship/@ChampionshipId">Back</a></div>
 }
 
 
 @code{
 
     [Parameter]
-    public string ChamId { get; set; }
+    public string ChampionshipId { get; set; }
 
     [Parameter]
-    public string ID { get; set; }
-    
+    public string TournamentId { get; set; }
 
-    private Tournament? Tournament { get; set; }
 
-    private Organizer Organizer { get; set; }
-    
+    private Tournament? _tournament;
+
     protected override async Task OnInitializedAsync()
     {
-        if (Guid.TryParse(ID, out Guid parsedTournamentId) && 
-            Guid.TryParse(ChamId, out Guid parsedChampionshipId))
+        _tournament = TournamentService.GetWithAllIncludes(TournamentId);
+        if (_tournament?.Championship.ID.ToString() != ChampionshipId)
         {
-            Tournament = TournamentRepository.FilterWithIncludes(c => c.ID == parsedTournamentId && c.Championship.ID == parsedChampionshipId).SingleOrDefault();
+            _tournament = null;
         }
     }
 

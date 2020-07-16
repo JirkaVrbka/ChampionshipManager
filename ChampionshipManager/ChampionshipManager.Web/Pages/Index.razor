@@ -1,5 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Identity
+@using ChampionshipManager.Web.Pages.Components
+
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
@@ -14,9 +16,11 @@
         <form method="post" action="Identity/Account/LogOut">
             <button type="submit" class="nav-link btn btn-link">Log out</button>
         </form>
+        <CreateOrganizerIfNotCreated></CreateOrganizerIfNotCreated>
     </Authorized>
     <NotAuthorized>
         <a href="Identity/Account/Register">Register</a>
         <a href="Identity/Account/Login">Log in</a>
     </NotAuthorized>
 </AuthorizeView>
+

@@ -1,24 +1,23 @@
-@page "/Skills"
+@page "/Teams"
 @using ChampionshipManager.Db.Models
 @using ChampionshipManager.Web.Utils
 @using ChampionshipManager.BusinessLayer.Services
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject OrganizerService OrganizerService
 
-@namespace ChampionshipManager.Web.Pages.Skills
+@namespace ChampionshipManager.Web.Pages.Teams
 
 <AuthorizeView>
     <Authorized>
-        <CreateSkill Refresh="@Refresh"/>
+        <CreateTeam Refresh="@Refresh"/>
         
         <br/>
         <br/>
-        Created skills: <br/>
-        @foreach (var skill in AllSkills)
+        Created teams: <br/>
+        @foreach (var team in AllTeams)
         {
-            @skill.Name<br/>
+            @team.Name<br/>
             
-            <div style="padding-left: 5em">@skill.Order</div><br/>
         }
     </Authorized>
 
@@ -30,12 +29,12 @@
 
 @code
 {
-    private List<Skill> AllSkills { get; set; }
+    private List<Team> AllTeams { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var organizerName = await AuthenticationStateProvider.GetUserName();
-        AllSkills = OrganizerService.GetSkillsByName(organizerName);
+        AllTeams = OrganizerService.GetTeamsByName(organizerName);
     }
 
     private void Refresh()

@@ -1,0 +1,38 @@
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Web.Utils
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject OrganizerService OrganizerService
+@inject SkillService SkillService
+@inject TeamService TeamService
+
+@namespace ChampionshipManager.Web.Pages.Components
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        if (!OrganizerService.ExistOrganizerByName(organizerName))
+        {
+            Organizer organizer = new Organizer
+            {
+                Name = organizerName,
+                BirthEnabled = true,
+                GenderEnabled = true,
+                SkillsEnabled = true,
+                TeamsEnabled = true
+            };
+
+            OrganizerService.Create(organizer);
+            organizer = OrganizerService.GetByName(organizerName);
+
+            var defaultSkill = new Skill{ Name = "None", Order = 0, Organizer = organizer};
+            var defaultTeam = new Team{ Name = "None", Organizer = organizer};
+
+            SkillService.Create(defaultSkill);
+            TeamService.Create(defaultTeam);
+        }
+    }
+}

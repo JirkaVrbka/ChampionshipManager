@@ -1,20 +1,38 @@
 @page "/Settings"
 @using ChampionshipManager.Db.Models
+@using ChampionshipManager.Web.Utils
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Pages.Skills
+@using ChampionshipManager.Web.Pages.Teams
+
+
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject Db.Repository.OrganizerRepository OrganizerRepository
+@inject OrganizerService OrganizerService
 
 <AuthorizeView>
     <Authorized>
-        
-        
-        
-        Enabled competitors trades:<br/>
-        <input name="age" type="checkbox" checked="@Organizer.AgeEnabled" @onclick="ChangeAgeEnabled"/>Age<br/>
-        <input name="birth" type="checkbox" checked="@Organizer.BirthEnabled" @onclick="ChangeBirthEnabled"/>Birth date<br/>
-        <input name="gender" type="checkbox" checked="@Organizer.GenderEnabled" @onclick="ChangeGenderEnabled"/>Gender<br/>
-        <input name="skills" type="checkbox" checked="@Organizer.SkillsEnabled" @onclick="ChangeSkillEnabled"/>Skills<br/>
-        <button @onclick="OnSaveClick">Save</button>
-        <div style="display:@_isSaved">Saved</div>
+
+        <div class="row">
+            <div class="responsiveColumn">
+                <h2>Competitors properties</h2>
+                <p>Properties that you care about in tournaments</p>
+                <input name="birth" type="checkbox" checked="@_organizer.BirthEnabled" @onclick="ChangeBirthEnabled"/>Birth date<br/>
+                <input name="gender" type="checkbox" checked="@_organizer.GenderEnabled" @onclick="ChangeGenderEnabled"/>Gender<br/>
+                <input name="skills" type="checkbox" checked="@_organizer.SkillsEnabled" @onclick="ChangeSkillEnabled"/>Skills<br/>
+                <input name="skills" type="checkbox" checked="@_organizer.TeamsEnabled" @onclick="ChangeTeamEnabled"/>Teams<br/>
+            </div>
+            <div class="responsiveColumn">
+                <div style=" @_teamsDisplay">
+                    <Teams></Teams>
+                </div>
+                <br/>
+                <div style="@_skillsDisplay">
+                    <Skills></Skills>
+                </div>
+            </div>
+        </div>
+
+
     </Authorized>
 
 
@@ -25,24 +43,46 @@
 
 @code
 {
-    private Organizer Organizer { get; set; }
-    private string _isSaved = "none;";
+    private Organizer _organizer;
+    private string _teamsDisplay;
+    private string _skillsDisplay;
 
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        Organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name, null).Single();
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        _organizer = OrganizerService.GetByName(organizerName);
+
+        SetSkillsDisplay(_organizer.SkillsEnabled);
+        SetTeamsDisplay(_organizer.TeamsEnabled);
     }
-    
-    void OnSaveClick()
+
+
+    void ChangeBirthEnabled()
     {
-        OrganizerRepository.Edit(Organizer);
-        _isSaved = "block;";
+        _organizer.BirthEnabled = !_organizer.BirthEnabled;
+        OrganizerService.EditAsync(_organizer);
     }
 
-    void ChangeAgeEnabled() => Organizer.AgeEnabled = !Organizer.AgeEnabled;
-    void ChangeBirthEnabled() => Organizer.BirthEnabled = !Organizer.BirthEnabled;
-    void ChangeSkillEnabled() => Organizer.SkillsEnabled = !Organizer.SkillsEnabled;
-    void ChangeGenderEnabled() => Organizer.GenderEnabled = !Organizer.GenderEnabled;
+    void ChangeSkillEnabled()
+    {
+        _organizer.SkillsEnabled = !_organizer.SkillsEnabled;
+        SetSkillsDisplay(_organizer.SkillsEnabled);
+        OrganizerService.EditAsync(_organizer);
+    }
 
+    void ChangeGenderEnabled()
+    {
+        _organizer.GenderEnabled = !_organizer.GenderEnabled;
+        OrganizerService.EditAsync(_organizer);
+    }
+
+    void ChangeTeamEnabled()
+    {
+        _organizer.TeamsEnabled = !_organizer.TeamsEnabled;
+        SetTeamsDisplay(_organizer.TeamsEnabled);
+        OrganizerService.EditAsync(_organizer);
+    }
+
+    void SetTeamsDisplay(bool value) => _teamsDisplay = "display: " + (value ? "block" : "none");
+    void SetSkillsDisplay(bool value) => _skillsDisplay = "display: " + (value ? "block" : "none");
 }

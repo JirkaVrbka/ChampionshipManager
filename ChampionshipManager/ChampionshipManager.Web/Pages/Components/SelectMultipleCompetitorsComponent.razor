@@ -1,5 +1,8 @@
 @using ChampionshipManager.Db.Models
+@namespace ChampionshipManager.Web.Pages.Components
+
 <div class="multiple-selector">
+    Unselected
     <ul class="selectable-ul">
         @foreach (var item in NoSelected)
         {
@@ -10,6 +13,7 @@
         <button type="button" @onclick="SelectAll">>></button>
         <button type="button" @onclick="DeselectAll">@removeAllText</button>
     </div>
+    Selected
     <ul class="selectable-ul">
         @foreach (var item in Selected)
         {

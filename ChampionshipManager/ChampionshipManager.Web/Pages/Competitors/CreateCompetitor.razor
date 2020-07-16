@@ -1,10 +1,10 @@
 @using ChampionshipManager.Db.Models
-@using ChampionshipManager.Db.Repository
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject CompetitorRepository CompetitorRepository
-@inject SkillRepository SkillRepository
-@inject OrganizerRepository OrganizerRepository
+@inject CompetitorService CompetitorService
+@inject OrganizerService OrganizerService
 
 Create new competitor
 
@@ -36,6 +36,16 @@ Create new competitor
             }
         </InputSelect>
     }
+    
+    @if (_organizer.TeamsEnabled)
+        {
+            <InputSelect id="skill" @bind-Value="_teamId">
+                @foreach (var item in _organizer.Teams)
+                {
+                    <option value="@item.ID.ToString()">@item.Name</option>
+                }
+            </InputSelect>
+        }
 
     <button type="submit">Submit</button>
 </EditForm>
@@ -47,25 +57,27 @@ Create new competitor
     public Action Refresh { get; set; }
 
     private Organizer _organizer;
-    private Competitor _competitor = new Competitor();
+    private Competitor _competitor = new Competitor
+    {
+        Gender = Gender.Unknown,
+    };
     private string _skillId;
+    private string _teamId;
 
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        _organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name, new List<string> {nameof(Organizer.Skills)}).Single();
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        _organizer = OrganizerService.GetWithSkillsTeamsByName(organizerName);
         SetUpNewCompetitor();
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        if (_skillId != null)
-        {
-            var skill = SkillRepository.FilterWithIncludes(s => s.ID == Guid.Parse(_skillId) && s.Organizer.ID == _organizer.ID).SingleOrDefault();
-            _competitor.Skill = skill;
-        }
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        _competitor.Skill = OrganizerService.GetSkillByNameOrDefault(organizerName, _skillId);
+        _competitor.Team = OrganizerService.GetTeamByNameOrDefault(organizerName, _teamId);
         
-        CompetitorRepository.Create(_competitor);
+        CompetitorService.Create(_competitor);
         SetUpNewCompetitor();
         Refresh.Invoke();
     }

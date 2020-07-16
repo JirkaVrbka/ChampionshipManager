@@ -13,7 +13,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" />
     </ItemGroup>
 
@@ -46,6 +46,18 @@
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
       <Content Update="Pages\Competitors\CreateCompetitor.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\Components\SelectMultipleCompetitorsComponent.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\Teams\CreateTeam.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\Teams\Teams.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
+      <Content Update="Pages\Components\CreateOrganizerIfNotCreated.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
     </ItemGroup>

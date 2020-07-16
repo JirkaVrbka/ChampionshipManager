@@ -6,7 +6,9 @@
 @inject SkillService SkillService
 @inject OrganizerService OrganizerService
 
-        Create new skill:<br/>
+@namespace ChampionshipManager.Web.Pages.Skills
+
+Create new skill:<br/>
 
         <EditForm Model="@_skill" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator/>

@@ -1,0 +1,42 @@
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject TeamService TeamService
+@inject OrganizerService OrganizerService
+
+@namespace ChampionshipManager.Web.Pages.Teams
+
+Create new team:<br/>
+
+<EditForm Model="@_team" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <InputText id="name" @bind-Value="_team.Name"/>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+
+@code{
+
+    [Parameter]
+    public Action Refresh { get; set; }
+
+    private Team _team = new Team();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        _team.Organizer = OrganizerService.GetByName(organizerName);
+    }
+
+    private void HandleValidSubmit()
+    {
+        TeamService.Create(_team);
+        Refresh?.Invoke();
+    }
+
+}

@@ -1,13 +1,11 @@
 @page "/Championship/{Id}"
 @using ChampionshipManager.Db.Models
-@using ChampionshipManager.Db.Repository
 @using ChampionshipManager.BusinessLayer.Services
 @using ChampionshipManager.Web.Utils
 
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ChampionshipService ChampionshipService
-@inject ChampionshipRepository ChampionshipRepository
 
 @if (CurrentChampionship == null)
 {
@@ -25,13 +23,13 @@ else
     <h4>Tournaments in progress</h4>
 @foreach (var tournament in CurrentChampionship.Tournaments.Where(t => !t.IsFinished))
 {
-    <a href = "/Tournament/@tournament.ID" style="padding-left: 5em">@tournament.Name</a>
+    <a href = "/Tournament/@Id/@tournament.ID" style="padding-left: 5em">@tournament.Name</a>
 }
 
     <h4>Tournaments finished</h4>
 @foreach (var tournament in CurrentChampionship.Tournaments.Where(t => t.IsFinished))
 {
-    <a href = "/Tournament/@tournament.ID" style="padding-left: 5em">@tournament.Name</a>
+    <a href = "/Tournament/@Id/@tournament.ID" style="padding-left: 5em">@tournament.Name</a>
 }
 }
 
@@ -45,7 +43,7 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        CurrentChampionship = ChampionshipService.GetWithIncludes(Id);
+        CurrentChampionship = ChampionshipService.GetWithAllIncludes(Id);
     }
 
 }

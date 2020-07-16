@@ -1,7 +1,9 @@
 @page "/Competitors"
 @using ChampionshipManager.Db.Models
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject Db.Repository.OrganizerRepository OrganizerRepository
+@inject OrganizerService OrganizerService
 
 <AuthorizeView>
     <Authorized>
@@ -10,21 +12,21 @@
         <br/>
         <br/>
         Competitors: <br/>
-        @foreach (var competitor in Organizer.Competitors)
+        @foreach (var competitor in _organizer.Competitors)
         {
             <br/>
             @competitor.Name
             <br/>
             
-            @if (Organizer.BirthEnabled)
+            @if (_organizer.BirthEnabled)
             {
                 <div style="padding-left: 5em">@competitor.BirthDate</div>
             }
-            @if (Organizer.GenderEnabled)
+            @if (_organizer.GenderEnabled)
             {
                 <div style="padding-left: 5em">@competitor.Gender</div>
             }
-            @if (Organizer.SkillsEnabled)
+            @if (_organizer.SkillsEnabled)
             {
                 <div style="padding-left: 5em">@competitor.Skill.Name</div>
             }
@@ -39,11 +41,11 @@
 
 @code
 {
-    private Organizer Organizer { get; set; }
+    private Organizer _organizer;
 
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        Organizer = OrganizerRepository.FilterWithIncludes(organizer => organizer.Name == user.Identity.Name).Single();
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        _organizer = OrganizerService.GetWithCompetitorsByName(organizerName);
     }
 }
