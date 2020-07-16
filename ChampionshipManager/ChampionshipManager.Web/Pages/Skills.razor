@@ -31,7 +31,7 @@
     protected override async Task OnInitializedAsync()
     {
         var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        Organizer = OrganizerRepository.Filter(organizer => organizer.Name == user.Identity.Name).Single();
+        Organizer = OrganizerRepository.FilterWithIncludes(organizer => organizer.Name == user.Identity.Name).Single();
     }
 
     private void Refresh()

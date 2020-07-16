@@ -42,7 +42,7 @@ else
         if (Guid.TryParse(ID, out Guid parsedTournamentId) && 
             Guid.TryParse(ChamId, out Guid parsedChampionshipId))
         {
-            Tournament = TournamentRepository.Filter(c => c.ID == parsedTournamentId && c.Championship.ID == parsedChampionshipId).SingleOrDefault();
+            Tournament = TournamentRepository.FilterWithIncludes(c => c.ID == parsedTournamentId && c.Championship.ID == parsedChampionshipId).SingleOrDefault();
         }
     }
 

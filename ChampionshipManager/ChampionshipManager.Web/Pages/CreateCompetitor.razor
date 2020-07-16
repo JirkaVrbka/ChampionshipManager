@@ -61,7 +61,7 @@ Create new competitor
     {
         if (_skillId != null)
         {
-            var skill = SkillRepository.Filter(s => s.ID == Guid.Parse(_skillId) && s.Organizer.ID == _organizer.ID).SingleOrDefault();
+            var skill = SkillRepository.FilterWithIncludes(s => s.ID == Guid.Parse(_skillId) && s.Organizer.ID == _organizer.ID).SingleOrDefault();
             _competitor.Skill = skill;
         }
         

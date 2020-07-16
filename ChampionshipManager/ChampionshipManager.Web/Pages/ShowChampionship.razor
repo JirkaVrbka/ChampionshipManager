@@ -1,10 +1,12 @@
-@page "/Championship/{ID}"
+@page "/Championship/{Id}"
 @using ChampionshipManager.Db.Models
 @using ChampionshipManager.Db.Repository
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
 
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject OrganizerRepository OrganizerRepository
+@inject OrganizerService OrganizerService
 @inject ChampionshipRepository ChampionshipRepository
 
 @if (CurrentChampionship == null)
@@ -36,20 +38,22 @@ else
 
 @code{
     [Parameter]
-    public string ID { get; set; }
+    public string Id { get; set; }
 
-    private Championship? CurrentChampionship { get; set; }
+    private Championship CurrentChampionship { get; set; }
 
     
     protected override async Task OnInitializedAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        var organizerId = OrganizerRepository.GetIdByName(user.Identity.Name);
-
-        if (Guid.TryParse(ID, out Guid parsedId))
-        {
-            CurrentChampionship = ChampionshipRepository.Filter(c => c.ID == parsedId && c.Organizer.ID == organizerId).SingleOrDefault();
-        }
+        var identity = await AuthenticationStateProvider.GetUserIdentity();
+        CurrentChampionship = OrganizerService.GetChampionshipWithIncludes(identity, Id);
+        
+        // var organizerId = OrganizerService.GetIdByName(await AuthenticationStateProvider.GetUserIdentity());
+        //
+        // if (Guid.TryParse(Id, out Guid parsedId))
+        // {
+        //     CurrentChampionship = OrganizerService.GetChampionships(organizerId).SingleOrDefault(c => c.ID == parsedId); //ChampionshipRepository.FilterWithIncludes(c => c.ID == parsedId && c.Organizer.ID == organizerId).SingleOrDefault();
+        // }
     }
 
 }

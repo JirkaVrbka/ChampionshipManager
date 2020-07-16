@@ -67,7 +67,7 @@ Create new championship
     {
         var championship =  Organizer.Championships.Single(c => c.ID.ToString() == ChampionshipId);
         
-        Selected.AddRange(championship.Competitors);
+        NoSelected.AddRange(championship.Competitors);
         _tournament.Championship = championship;
         _tournament.Competitors = new List<Competitor>();
         _tournament.Games = new List<Game>();

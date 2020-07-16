@@ -1,3 +1,4 @@
+using ChampionshipManager.BusinessLayer.Services;
 using ChampionshipManager.Db.Context;
 using ChampionshipManager.Db.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -55,6 +56,8 @@ namespace ChampionshipManager.Web
             services.AddSingleton<SkillRepository>();
             services.AddSingleton<ChampionshipRepository>();
             services.AddSingleton<TournamentRepository>();
+
+            services.AddSingleton<OrganizerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
