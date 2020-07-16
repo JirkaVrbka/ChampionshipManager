@@ -13,23 +13,23 @@
     <Authorized>
 
         <div class="row">
-            <div class="responsiveColumn">
+            <span class="responsiveColumn">
                 <h2>Competitors properties</h2>
                 <p>Properties that you care about in tournaments</p>
                 <input name="birth" type="checkbox" checked="@_organizer.BirthEnabled" @onclick="ChangeBirthEnabled"/>Birth date<br/>
                 <input name="gender" type="checkbox" checked="@_organizer.GenderEnabled" @onclick="ChangeGenderEnabled"/>Gender<br/>
                 <input name="skills" type="checkbox" checked="@_organizer.SkillsEnabled" @onclick="ChangeSkillEnabled"/>Skills<br/>
                 <input name="skills" type="checkbox" checked="@_organizer.TeamsEnabled" @onclick="ChangeTeamEnabled"/>Teams<br/>
-            </div>
-            <div class="responsiveColumn">
-                <div style=" @_teamsDisplay">
+            </span>
+            <span class="responsiveColumn">
+                <div style="@_teamsDisplay">
                     <Teams></Teams>
                 </div>
                 <br/>
                 <div style="@_skillsDisplay">
                     <Skills></Skills>
                 </div>
-            </div>
+            </span>
         </div>
 
 
@@ -57,30 +57,30 @@
     }
 
 
-    void ChangeBirthEnabled()
+    async Task ChangeBirthEnabled()
     {
         _organizer.BirthEnabled = !_organizer.BirthEnabled;
-        OrganizerService.EditAsync(_organizer);
+        await OrganizerService.EditAsync(_organizer);
     }
 
-    void ChangeSkillEnabled()
+    async Task ChangeSkillEnabled()
     {
         _organizer.SkillsEnabled = !_organizer.SkillsEnabled;
         SetSkillsDisplay(_organizer.SkillsEnabled);
-        OrganizerService.EditAsync(_organizer);
+        await OrganizerService.EditAsync(_organizer);
     }
 
-    void ChangeGenderEnabled()
+    async Task ChangeGenderEnabled()
     {
         _organizer.GenderEnabled = !_organizer.GenderEnabled;
-        OrganizerService.EditAsync(_organizer);
+        await OrganizerService.EditAsync(_organizer);
     }
 
-    void ChangeTeamEnabled()
+    async Task ChangeTeamEnabled()
     {
         _organizer.TeamsEnabled = !_organizer.TeamsEnabled;
         SetTeamsDisplay(_organizer.TeamsEnabled);
-        OrganizerService.EditAsync(_organizer);
+        await OrganizerService.EditAsync(_organizer);
     }
 
     void SetTeamsDisplay(bool value) => _teamsDisplay = "display: " + (value ? "block" : "none");
