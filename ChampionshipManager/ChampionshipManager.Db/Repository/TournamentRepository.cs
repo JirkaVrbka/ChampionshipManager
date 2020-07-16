@@ -6,7 +6,7 @@ namespace ChampionshipManager.Db.Repository
 {
     public class TournamentRepository : ASpecificEntityRepository<Tournament>
     {
-        protected override List<string> Includes { get; } = new List<string>
+        public override List<string> Includes { get; } = new List<string>
         {
             nameof(Tournament.Championship),
             nameof(Tournament.Competitors),

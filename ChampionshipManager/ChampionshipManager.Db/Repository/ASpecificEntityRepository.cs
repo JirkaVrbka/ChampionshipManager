@@ -7,18 +7,18 @@ namespace ChampionshipManager.Db.Repository
     public abstract class ASpecificEntityRepository<TEntity> : Repository<TEntity>
         where TEntity : class, IEntity
     {
-        protected abstract List<string> Includes { get; }
+        public abstract List<string> Includes { get; }
 
         protected ASpecificEntityRepository(ChampionshipManagerContext context) : base(context)
         {
         }
         
-        public IEnumerable<TEntity> Filter()
+        public IEnumerable<TEntity> FilterWithIncludes()
         {
             return base.Filter(Includes);
         }
 
-        public IEnumerable<TEntity> Filter(Func<TEntity, bool> predicate)
+        public IEnumerable<TEntity> FilterWithIncludes(Func<TEntity, bool> predicate)
         {
             return base.Filter(predicate, Includes);
         }
