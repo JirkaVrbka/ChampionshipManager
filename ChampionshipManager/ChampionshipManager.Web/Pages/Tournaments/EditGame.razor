@@ -33,9 +33,9 @@
                 </button>
             </div>
             <br/>
-            <div>@SelectedGame.PlayerOne.Name</div>
+            <div>@(SelectedGame.PlayerOne?.Name ?? "TBD")</div>
             <br/>
-            <div>@SelectedGame.PlayerTwo.Name</div>
+            <div>@(SelectedGame.PlayerTwo?.Name ?? "TBD")</div>
 
             <br/>
             <div>

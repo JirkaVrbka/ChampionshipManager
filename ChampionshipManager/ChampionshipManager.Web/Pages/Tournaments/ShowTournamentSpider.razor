@@ -36,16 +36,38 @@
             }
             <br/>
         }
+        <br/>
+        <br/>
         
         <h3>Matches</h3>
-        @foreach (var game in Games)
-        {
-            <button style="font-size: large;width: 250px" @onclick="@(() => SelectGame(game))">
-                <span>@(game.PlayerOne.Name)</span> vs <span>@(game.PlayerTwo.Name)</span>
-                <br/>
-                <span>@game.PlayerOneScore</span> : <span>@game.PlayerTwoScore</span>
-            </button>
+        @{
+            int round = 0;
+            while (Games.Any(g => g.Round == round))
+            {
+                <h4>Round @round</h4>
+
+                @foreach (var game in Games.FindAll(g => g.Round == round))
+                {
+                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectGame(game))">
+                        <span>@(game.PlayerOne?.Name ?? "TBD")</span> vs <span>@(game.PlayerTwo?.Name ?? "TBD")</span>
+                        <br/>
+                        @if (game.PlayerOneScore != 0 || game.PlayerTwoScore != 0)
+                        {
+                            <span>@game.PlayerOneScore</span> <span>:</span> <span> @game.PlayerTwoScore </span>
+                        }
+                        else
+                        {
+                            <span>? : ?</span>
+                        }
+                    </button>
+                }
+                
+                
+                round++;
+            }
         }
+        
+        
     </div>
 
     <div class="responsiveColumn second" style="font-size: larger">
@@ -71,6 +93,7 @@
     protected override async Task OnInitializedAsync()
     {
         Games = GameService.GetByTournamentIdWithIncludes(TournamentId);
+        TournamentService.ProcessSpiderGamesAndEdit(TournamentId);
     }
 
     private void UpdatedGame()

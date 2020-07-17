@@ -65,11 +65,13 @@ namespace ChampionshipManager.BusinessLayer.Services
             foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne == null && g.PlayerTwo != null))
             {
                 game.Winner = game.PlayerTwo;
+                game.PlayerTwoScore = 1;
             }
             
             foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne != null && g.PlayerTwo == null))
             {
                 game.Winner = game.PlayerOne;
+                game.PlayerOneScore = 1;
             }
             
             var tiers = tournament.Games.GroupBy(
