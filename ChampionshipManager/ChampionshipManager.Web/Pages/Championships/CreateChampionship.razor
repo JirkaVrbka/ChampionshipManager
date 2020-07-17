@@ -32,33 +32,33 @@
                 }
             </ul>
         </div>
-    
-    <div class="responsiveColumn" style="font-size: larger">
 
-        <div style="font-size: x-large">
-            <button class="oi oi-check" type="submit" style="width: 250px">
-                <span style="padding-left: 10px">Add</span>
-            </button>
+        <div class="responsiveColumn" style="font-size: larger">
+
+            <div style="font-size: x-large">
+                <button class="oi oi-check" type="submit" style="width: 250px">
+                    <span style="padding-left: 10px">Add</span>
+                </button>
+            </div>
+            <br/>
+
+            <InputText id="name" @bind-Value="_championship.Name" placeholder="Name" style="width: 250px"/>
+
+            <br/>
+            <br/>
+            <div>Unselected</div>
+            <br/>
+            <div class="multiple-selector-buttons">
+                <button type="button" @onclick="SelectAll">@addAllText</button>
+            </div>
+            <ul>
+                @foreach (var item in NoSelected)
+                {
+                    <li @onclick="@(() => Select(item))">@item.Name</li>
+                }
+            </ul>
+
         </div>
-        <br/>
-
-        <InputText id="name" @bind-Value="_championship.Name" placeholder="Name" style="width: 250px"/>
-
-        <br/>
-        <br/>
-        <div>Unselected</div>
-        <br/>
-        <div class="multiple-selector-buttons">
-            <button type="button" @onclick="SelectAll">@addAllText</button>
-        </div>
-        <ul>
-            @foreach (var item in NoSelected)
-            {
-                <li @onclick="@(() => Select(item))">@item.Name</li>
-            }
-        </ul>
-
-    </div>
 
     </div>
 </EditForm>

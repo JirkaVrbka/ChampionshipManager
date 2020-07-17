@@ -1,0 +1,79 @@
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.Db.Repository
+@using ChampionshipManager.BusinessLayer.Services
+
+@inject GameService GameService
+
+<EditForm Model="@SelectedGame" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="row">
+
+        <div class="responsiveColumn" style="font-size: larger">
+
+            <div style="font-size: x-large">Details:</div>
+            <br/>
+            <div>Player one</div>
+            <br/>
+            <div>Player two</div>
+
+            <br/>
+            <div>Player's one score</div>
+
+            <br/>
+            <div>Player's two score</div>
+
+        </div>
+        <div class="responsiveColumn" style="font-size: larger">
+
+            <div style="font-size: x-large">
+                <button class="oi oi-check" type="submit" style="width: 250px">
+                    <span style="padding-left: 10px">@(_editState ? "Save" : "Update")</span>
+                </button>
+            </div>
+            <br/>
+            <div>@SelectedGame.PlayerOne.Name</div>
+            <br/>
+            <div>@SelectedGame.PlayerTwo.Name</div>
+
+            <br/>
+            <div>
+                <InputNumber id="player-one-score" @bind-Value="SelectedGame.PlayerOneScore"/>
+            </div>
+
+            <br/>
+            <div>
+                <InputNumber id="player-two-score" @bind-Value="SelectedGame.PlayerTwoScore"/>
+            </div>
+
+
+        </div>
+    </div>
+</EditForm>
+
+
+@code{
+
+    [Parameter]
+    public Action Refresh { get; set; }
+
+    [Parameter]
+    public Game SelectedGame { get; set; }
+
+    private bool _editState = false;
+
+
+    private void HandleValidSubmit()
+    {
+        if (_editState)
+        {
+            GameService.Edit(SelectedGame);
+        }
+
+        _editState = !_editState;
+        StateHasChanged();
+        Refresh.Invoke();
+    }
+
+}

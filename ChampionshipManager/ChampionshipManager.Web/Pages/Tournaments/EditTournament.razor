@@ -1,0 +1,167 @@
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
+
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject TournamentService TournamentService
+@inject ChampionshipService ChampionshipService
+
+@namespace ChampionshipManager.Web.Pages.Tournaments
+
+@if (SelectedTournament == null)
+{
+    <div>Something went wrong, please go <a href="/Championship/@ParentChampionship.ID">back</a></div>
+}
+else
+{
+    <EditForm Model="@SelectedTournament" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+    <div class="row">
+        
+        <div class="responsiveColumn" style="font-size: larger">
+            
+            <button @onclick="@(ChangeFinishState)" style="width: 250px" disabled="@(!_editState)">@(SelectedTournament.IsFinished ? "Unfinish" : "Finish")</button>
+            <div style="font-size: x-large">Details:</div>
+            <br/>
+            <div>Name</div>
+            <br/>
+            <div>Type</div>
+            <br/>
+            <div>Selected</div>
+            <br/>
+            <div class="multiple-selector-buttons">
+                <button type="button" @onclick="DeselectAll" disabled="@(!_editState)">@removeAllText</button>
+            </div>
+            <ul>
+                @foreach (var item in Selected)
+                {
+                    <li @onclick="@(() => Deselect(item))">@item.Name</li>
+                }
+            </ul>
+            
+        </div>
+        <div class="responsiveColumn" style="font-size: larger">
+
+            <div style="font-size: x-large">
+                <button class="oi oi-check" type="submit" style="width: 250px">
+                    <span style="padding-left: 10px">@(_editState ? "Save" : "Update")</span>
+                </button>
+            </div>
+            <br/>
+            <br/>
+
+            <InputText id="name" @bind-Value="SelectedTournament.Name" placeholder="Name" style="width: 250px" disabled="@(!_editState)"/>
+
+
+            <br/>
+            <br/>
+            <InputSelect id="tournamentType" @bind-Value="SelectedTournament.TournamentType" style="width: 250px" disabled="@(!_editState)">
+                @foreach (var item in Enum.GetNames(typeof(TournamentType)))
+                {
+                    <option value="@item">@item</option>
+                }
+            </InputSelect>
+            <br/>
+            <div>Unselected</div>
+            <br/>
+            <div class="multiple-selector-buttons">
+                <button type="button" @onclick="SelectAll" disabled="@(!_editState)">@addAllText</button>
+            </div>
+            <ul>
+                @foreach (var item in NoSelected)
+                {
+                    <li @onclick="@(() => Select(item))">@item.Name</li>
+                }
+            </ul>
+
+        </div>
+    </div>
+    
+    </EditForm>
+}
+
+
+@code{
+
+    [Parameter]
+    public Championship ParentChampionship { get; set; }
+
+    [Parameter]
+    public Action Refresh { get; set; }
+
+    [Parameter]
+    public Tournament SelectedTournament { get; set; }
+
+    public List<Competitor> NoSelected { get; set; } = new List<Competitor>();
+    public List<Competitor> Selected { get; set; } = new List<Competitor>();
+
+
+    private string removeAllText = ">>";
+    private string addAllText = "<<";
+    
+    private bool _editState = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Selected.AddRange(SelectedTournament.Competitors);
+        NoSelected.AddRange(ChampionshipService.GetCompetitors(ParentChampionship.ID));
+        NoSelected.RemoveAll(x => Selected.Contains(x));
+
+    }
+
+    private void HandleValidSubmit()
+    {
+        if (_editState)
+        {
+            SelectedTournament.Competitors = Selected;
+
+            TournamentService.Edit(SelectedTournament);
+        }
+        
+        _editState = !_editState;
+        StateHasChanged();
+        Refresh.Invoke();
+    }
+
+    private void ChangeFinishState()
+    {
+        SelectedTournament.IsFinished = !SelectedTournament.IsFinished;
+    }
+    
+
+    private void Select(Competitor item)
+    {
+        if (_editState)
+        {
+
+            NoSelected.Remove(item);
+            Selected.Add(item);
+        }
+    }
+
+    private void Deselect(Competitor item)
+    {
+        if (_editState)
+        {
+            Selected.Remove(item);
+            NoSelected.Add(item);
+        }
+    }
+
+    private void SelectAll()
+    {
+        Selected.AddRange(NoSelected);
+        NoSelected.Clear();
+    }
+
+    private void DeselectAll()
+    {
+        NoSelected.AddRange(Selected);
+        Selected.Clear();
+    }
+
+}

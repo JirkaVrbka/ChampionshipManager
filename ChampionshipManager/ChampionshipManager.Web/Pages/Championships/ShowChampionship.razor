@@ -2,48 +2,91 @@
 @using ChampionshipManager.Db.Models
 @using ChampionshipManager.BusinessLayer.Services
 @using ChampionshipManager.Web.Utils
+@using ChampionshipManager.Web.Pages.Tournaments
 
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ChampionshipService ChampionshipService
 
-@if (CurrentChampionship == null)
-{
-    <div>Something went wrong, please go <a href="/Championships">back</a></div>
-}
-else
-{
-    <h3>@CurrentChampionship.Name</h3>
-    <a href="/CreateTournament/@CurrentChampionship.ID.ToString()">Create new Tournament</a>
-    <h4>People</h4>   
-    @foreach (var person in CurrentChampionship.Competitors)
-    {
-        <div style="padding-left: 5em">@person.Name</div>
-    }
-    <h4>Tournaments in progress</h4>
-@foreach (var tournament in CurrentChampionship.Tournaments.Where(t => !t.IsFinished))
-{
-    <a href = "/Tournament/@Id/@tournament.ID" style="padding-left: 5em">@tournament.Name</a>
-}
 
-    <h4>Tournaments finished</h4>
-@foreach (var tournament in CurrentChampionship.Tournaments.Where(t => t.IsFinished))
-{
-    <a href = "/Tournament/@Id/@tournament.ID" style="padding-left: 5em">@tournament.Name</a>
-}
-}
+<AuthorizeView>
+    <Authorized>
+
+        <div class="row">
+            <span class="responsiveColumn">
+                <h2>@CurrentChampionship.Name <span>(Championship)</span></h2>
+
+                <p>Championship to host tournaments</p>
+                <br/>
+                <div style="font-size: large">
+                    <button class="oi oi-plus" style="width: 250px" @onclick="@(() => SelectTournament(null))">
+                        <span style="padding-left: 10px">Add new tournament</span>
+                    </button>
+                </div>
+                <br/>
+                <br/>
+                <h4>Tournament in progress</h4>
+                @foreach (var tournament in CurrentChampionship.Tournaments.Where(c => !c.IsFinished))
+                {
+                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(tournament))">
+                        <br/>
+                        @tournament.Name
+                        <br/>
+                    </button>
+                }
+
+                <h4>Championships finished</h4>
+                @foreach (var tournament in CurrentChampionship.Tournaments.Where(c => c.IsFinished))
+                {
+                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(tournament))">
+                        <br/>
+                        @tournament.Name
+                        <br/>
+                    </button>
+                }
+
+            </span>
+            <span class="responsiveColumn second">
+                @if (SelectedTournament == null)
+                {
+                    <CreateTournament OnCreated="@((championship) => SelectTournament(championship))" ParentChampionship="@CurrentChampionship"/>
+                }
+                else
+                {
+                    <a href = "/Tournament/@CurrentChampionship.ID/@SelectedTournament.ID" style="padding-left: 5em">@SelectedTournament.Name</a>
+                    <EditTournament Refresh="@StateHasChanged" SelectedTournament="@SelectedTournament" ParentChampionship="@CurrentChampionship"></EditTournament>
+                    
+                }
+            </span>
+        </div>
+
+    </Authorized>
+
+
+    <NotAuthorized>
+        Please log in.
+    </NotAuthorized>
+</AuthorizeView>
 
 
 @code{
     [Parameter]
     public string Id { get; set; }
 
+    private Tournament SelectedTournament = null;
+    
     private Championship CurrentChampionship { get; set; }
 
     
     protected override void OnInitialized()
     {
         CurrentChampionship = ChampionshipService.GetWithAllIncludes(Id);
+    }
+    
+    private void SelectTournament(Tournament tournament)
+    {
+        SelectedTournament = tournament;
+        StateHasChanged();
     }
 
 }

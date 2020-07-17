@@ -23,6 +23,16 @@ namespace ChampionshipManager.BusinessLayer.Services
                 ? GetWithCompetitors(championshipGuid) 
                 : null;
         }
+
+        public List<Competitor> GetCompetitors(string championshipId)
+        {
+            return GetWithCompetitors(championshipId).Competitors;
+        }
+        
+        public List<Competitor> GetCompetitors(Guid championshipId)
+        {
+            return GetWithIncludes(championshipId, new List<string>{nameof(Championship.Competitors)}).Competitors;
+        }
         
         private Championship GetWithIncludes(Guid championshipId, List<string> includes = null)
         {

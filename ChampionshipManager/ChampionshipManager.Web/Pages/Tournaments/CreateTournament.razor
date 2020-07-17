@@ -1,7 +1,4 @@
-@page "/CreateTournament/{ChampionshipId}"
 @using ChampionshipManager.Db.Models
-
-@using ChampionshipManager.Web.Pages.Components
 @using ChampionshipManager.BusinessLayer.Services
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -10,32 +7,83 @@
 @inject ChampionshipService ChampionshipService
 @inject TournamentService TournamentService
 
-Create new tournament
+@namespace ChampionshipManager.Web.Pages.Tournaments
 
 <EditForm Model="@_tournament" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
 
-    <InputText id="name" @bind-Value="_tournament.Name"/>
-    <InputSelect id="tournamentType" @bind-Value="_tournament.TournamentType">
-        @foreach (var item in Enum.GetNames(typeof(TournamentType)))
-        {
-            <option value="@item">@item</option>
-        }
-    </InputSelect>
+    <div class="row">
+        <div class="responsiveColumn" style="font-size: larger">
+            <div style="font-size: x-large">Create new tournament</div>
+            <br/>
+            <div>Name</div>
+            <br/>
+            <div>Type</div>
+            <br/>
+            <div>Selected</div>
+            <br/>
+            <div class="multiple-selector-buttons">
+                <button type="button" @onclick="DeselectAll">@removeAllText</button>
+            </div>
+            <ul>
+                @foreach (var item in Selected)
+                {
+                    <li @onclick="@(() => Deselect(item))">@item.Name</li>
+                }
+            </ul>
+        </div>
 
-    <SelectMultipleCompetitorsComponent Selected="@Selected" ></SelectMultipleCompetitorsComponent>
+        <div class="responsiveColumn" style="font-size: larger">
 
-    <button type="submit">Submit</button>
+            <div style="font-size: x-large">
+                <button class="oi oi-check" type="submit" style="width: 250px">
+                    <span style="padding-left: 10px">Add</span>
+                </button>
+            </div>
+            <br/>
+
+            <InputText id="name" @bind-Value="_tournament.Name" placeholder="Name" style="width: 250px"/>
+            <br/>
+            <br/>
+            <InputSelect id="tournamentType" @bind-Value="_tournament.TournamentType" style="width: 250px">
+                @foreach (var item in Enum.GetNames(typeof(TournamentType)))
+                {
+                    <option value="@item">@item</option>
+                }
+            </InputSelect>
+            <div>Unselected</div>
+            <br/>
+            <div class="multiple-selector-buttons">
+                <button type="button" @onclick="SelectAll">@addAllText</button>
+            </div>
+            <ul>
+                @foreach (var item in NoSelected)
+                {
+                    <li @onclick="@(() => Select(item))">@item.Name</li>
+                }
+            </ul>
+
+        </div>
+
+    </div>
 </EditForm>
 
 
 @code{
 
     [Parameter]
-    public string ChampionshipId { get; set; }
-    
+    public Championship ParentChampionship { get; set; }
+
+    [Parameter]
+    public Action<Tournament> OnCreated { get; set; }
+
+    public List<Competitor> NoSelected { get; set; } = new List<Competitor>();
     public List<Competitor> Selected { get; set; } = new List<Competitor>();
+
+
+    private string removeAllText = ">>";
+    private string addAllText = "<<";
 
     private readonly Tournament _tournament = new Tournament();
 
@@ -46,10 +94,8 @@ Create new tournament
 
     private void SetupTournamentForCreation()
     {
-        var championship = ChampionshipService.GetWithCompetitors(ChampionshipId);
-        
-        Selected.AddRange(championship.Competitors);
-        _tournament.Championship = championship;
+        Selected.AddRange(ChampionshipService.GetCompetitors(ParentChampionship.ID));
+        _tournament.Championship = ParentChampionship;
         _tournament.Competitors = new List<Competitor>();
         _tournament.Games = new List<Game>();
         _tournament.IsFinished = false;
@@ -58,8 +104,33 @@ Create new tournament
     private void HandleValidSubmit()
     {
         _tournament.Competitors = Selected;
-        var id = TournamentService.Create(_tournament);
-        NavigationManager.NavigateTo($"Tournament/{ChampionshipId}/{id.ToString()}");
+        TournamentService.Create(_tournament);
+        OnCreated.Invoke(_tournament);
+    }
+
+
+    private void Select(Competitor item)
+    {
+        NoSelected.Remove(item);
+        Selected.Add(item);
+    }
+
+    private void Deselect(Competitor item)
+    {
+        Selected.Remove(item);
+        NoSelected.Add(item);
+    }
+
+    private void SelectAll()
+    {
+        Selected.AddRange(NoSelected);
+        NoSelected.Clear();
+    }
+
+    private void DeselectAll()
+    {
+        NoSelected.AddRange(Selected);
+        Selected.Clear();
     }
 
 }
