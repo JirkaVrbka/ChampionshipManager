@@ -99,12 +99,6 @@
         var organizerName = await AuthenticationStateProvider.GetUserName();
         _organizer = OrganizerService.GetWithSkillsTeamsByName(organizerName);
         SetUpNewCompetitor();
-        
-        _competitor = new Competitor
-        {
-            Gender = Gender.Unknown,
-            BirthDate = DateTime.Today
-        };
     }
 
     private async Task HandleValidSubmit()
@@ -123,7 +117,8 @@
         _competitor = new Competitor
         {
             Organizer = _organizer,
-            Gender = Gender.Unknown
+            Gender = Gender.Unknown,
+        BirthDate = DateTime.Today
         };
     }
 

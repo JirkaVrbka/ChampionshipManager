@@ -30,17 +30,16 @@ namespace ChampionshipManager.BusinessLayer.Services
         private List<Game> CreateAgainstEverybodyGames(Tournament tournament)
         {
             List<Game> games = new List<Game>();
-            foreach (var competitor in tournament.Competitors)
+            var competitors = tournament.Competitors;
+ 
+            for (int i = 0; i < competitors.Count; i++)
             {
-                foreach (var challenger in tournament.Competitors)
+                for (int j = i+1; j < competitors.Count; j++)
                 {
-                    if(competitor == challenger)
-                        continue;
-                    
                     games.Add(new Game
                     {
-                        PlayerOne = competitor,
-                        PlayerTwo = challenger,
+                        PlayerOne = competitors[i],
+                        PlayerTwo = competitors[j],
                         PlayerOneScore = 0,
                         PlayerTwoScore = 0
                     });

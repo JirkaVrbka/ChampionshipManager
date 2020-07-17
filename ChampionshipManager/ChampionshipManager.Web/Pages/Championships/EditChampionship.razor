@@ -88,27 +88,40 @@
 
     protected override async Task OnInitializedAsync()
     {
+        Selected.Clear();
+        NoSelected.Clear();
         var organizerName = await AuthenticationStateProvider.GetUserName();
         
-        Selected.AddRange(SelectedChampionship.Competitors);
+        
+        Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
         NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
         NoSelected.RemoveAll(x => Selected.Contains(x));
-
     }
 
-    private void HandleValidSubmit()
+
+    private async Task HandleValidSubmit()
     {
         if (_editState)
         {
             SelectedChampionship.Competitors = Selected;
 
             ChampionshipService.Edit(SelectedChampionship);
+            
+            Selected.Clear();
+            NoSelected.Clear();
+            
+            var organizerName = await AuthenticationStateProvider.GetUserName();
+        
+        
+            Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
+            NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
+            NoSelected.RemoveAll(x => Selected.Contains(x));
+            
+            StateHasChanged();
             Refresh.Invoke();
         }
         
         _editState = !_editState;
-        StateHasChanged();
-        Refresh.Invoke();
     }
 
     private void ChangeFinishState()
