@@ -53,14 +53,50 @@ namespace ChampionshipManager.BusinessLayer.Services
 
         public void ProcessSpiderGames(ref Tournament tournament)
         {
+            //Default winners
+            foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne == null && g.PlayerTwo != null))
+            {
+                game.Winner = game.PlayerTwo;
+            }
+            
+            foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne != null && g.PlayerTwo == null))
+            {
+                game.Winner = game.PlayerOne;
+            }
+            
             var tiers = tournament.Games.GroupBy(
                 g => g.Round,
                 g => g,
                 (round, games) => new {round, games}).ToList();
-            
-            
-            
-            
+
+            for (int i = 0; i < tiers.Count - 1; i++)
+            {
+                var tierI = tournament.Games.Where(g => g.Round == i).ToList();
+                
+                var tierIPlusOne = tournament.Games.Where(g => g.Round == i + 1).ToList();
+                var tierIPlusOnePlayers = tierIPlusOne.FindAll(g => g.PlayerOne != null).Select(g => g.PlayerOne).ToList();
+                tierIPlusOnePlayers.AddRange(tierIPlusOne.FindAll(g => g.PlayerTwo != null).Select(g => g.PlayerTwo));
+
+                
+                
+                var unassigned = tierI.FindAll(g => 
+                    (g.Winner != null && !tierIPlusOnePlayers.Contains(g.Winner))
+                    ).Select(g => g.Winner).ToList();
+
+                foreach (var unsign in unassigned)
+                {
+                    var tierUpGame = tournament.Games.FirstOrDefault(g => g.Round == i + 1 && g.PlayerOne == null);
+                    if (tierUpGame != null)
+                    {
+                        tierUpGame.PlayerOne = unsign;
+                    }
+                    else
+                    {
+                        tournament.Games.Find(g => g.Round == i + 1 && g.PlayerTwo == null)!.PlayerTwo = unsign;
+                    }
+                }
+
+            }
         }
         
         private List<Game> CreateSpiderGames(Tournament tournament)
