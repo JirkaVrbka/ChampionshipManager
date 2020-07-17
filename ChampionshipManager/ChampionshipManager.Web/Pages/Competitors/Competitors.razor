@@ -1,6 +1,7 @@
 @page "/Competitors"
 @using ChampionshipManager.Db.Models
 @using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Pages.Components
 @using ChampionshipManager.Web.Utils
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject OrganizerService OrganizerService
@@ -8,35 +9,41 @@
 <AuthorizeView>
     <Authorized>
 
-        
-        
         <div class="row">
-            <div class="column">
-                <CreateCompetitor Refresh="@StateHasChanged"/>
-            </div>
-            <div class="column">
-                Competitors: <br/>
+            <span class="responsiveColumn">
+                <h2>Competitors:</h2>
+
+                <p>People that can be selected to compete</p>
+                <br/>
+                <div style="font-size: large">
+                    <button class="oi oi-plus" style="width: 250px" @onclick="@(() => SelectCompetitor(null))">
+                        <span style="padding-left: 10px">Add new competitor</span>
+                    </button>
+                </div>
+                <br/>
+                <br/>
                 @foreach (var competitor in _organizer.Competitors)
                 {
-                    <br/>
-                    @competitor.Name
-                    <br/>
-
-                    @if (_organizer.BirthEnabled)
-                    {
-                        <div style="padding-left: 5em">@competitor.BirthDate</div>
-                    }
-                    @if (_organizer.GenderEnabled)
-                    {
-                        <div style="padding-left: 5em">@competitor.Gender</div>
-                    }
-                    @if (_organizer.SkillsEnabled)
-                    {
-                        <div style="padding-left: 5em">@competitor.Skill.Name</div>
-                    }
+                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectCompetitor(competitor))">
+                        <br/>
+                        @competitor.Name
+                        <br/>
+                    </button>
                 }
-            </div>
+
+            </span>
+            <span class="responsiveColumn second">
+                @if (SelectedCompetitor == null)
+                {
+                    <CreateCompetitor Refresh="@StateHasChanged"/>
+                }
+                else
+                {
+                    <EditCompetitor Refresh="@StateHasChanged" SelectedCompetitor="@SelectedCompetitor"></EditCompetitor>
+                }
+            </span>
         </div>
+
     </Authorized>
 
 
@@ -48,10 +55,17 @@
 @code
 {
     private Organizer _organizer;
+    private Competitor SelectedCompetitor = null;
 
     protected override async Task OnInitializedAsync()
     {
         var organizerName = await AuthenticationStateProvider.GetUserName();
         _organizer = OrganizerService.GetWithCompetitorsByName(organizerName);
+    }
+
+    private void SelectCompetitor(Competitor competitor)
+    {
+        SelectedCompetitor = competitor;
+        StateHasChanged();
     }
 }

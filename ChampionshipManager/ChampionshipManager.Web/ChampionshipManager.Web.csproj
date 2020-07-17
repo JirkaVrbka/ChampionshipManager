@@ -66,6 +66,9 @@
       <Content Update="Pages\Components\EditSkill.razor">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </Content>
+      <Content Update="Pages\Competitors\EditCompetitor.razor">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>

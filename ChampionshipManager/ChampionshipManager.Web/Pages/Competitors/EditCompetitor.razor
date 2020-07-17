@@ -7,13 +7,13 @@
 @inject OrganizerService OrganizerService
 
 
-<EditForm Model="@_competitor" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="@SelectedCompetitor" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
 
     <div class="row">
         <div class="responsiveColumn" style="font-size: larger">
-            <div style="font-size: x-large">Create new competitor</div>
+            <div style="font-size: x-large">Details:</div>
             <br/>
             <div>Name</div>
             @if (_organizer.BirthEnabled)
@@ -37,19 +37,19 @@
 
             <div style="font-size: x-large">
                 <button class="oi oi-check" type="submit" style="width: 250px">
-                    <span style="padding-left: 10px">Add</span>
+                    <span style="padding-left: 10px">@(_editState ? "Edit" : "Update")</span>
                 </button>
                 </div>
             <br/>
             
-            <InputText id="name" @bind-Value="_competitor.Name" placeholder="Name" style="width: 250px"/>
+            <InputText id="name" @bind-Value="SelectedCompetitor.Name" placeholder="@SelectedCompetitor.Name" style="width: 250px" disabled="@(!_editState)"/>
             @if (_organizer.BirthEnabled)
             {
-                <InputDate id="birth" @bind-Value="_competitor.BirthDate" style="width: 250px; height: 28px"/>
+                <InputDate id="birth" @bind-Value="SelectedCompetitor.BirthDate" style="width: 250px; height: 28px" disabled="@(!_editState)"/>
             }
             @if (_organizer.GenderEnabled)
             {
-                <InputSelect id="gender" @bind-Value="_competitor.Gender" style="width: 250px; height: 28px">
+                <InputSelect id="gender" @bind-Value="SelectedCompetitor.Gender" style="width: 250px; height: 28px" disabled="@(!_editState)">
                     @foreach (var item in Enum.GetNames(typeof(Gender)))
                     {
                         <option value="@item">@item</option>
@@ -58,7 +58,7 @@
             }
             @if (_organizer.SkillsEnabled)
             {
-                <InputSelect id="skill" @bind-Value="_skillId" style="width: 250px; height: 28px">
+                <InputSelect id="skill" @bind-Value="_skillId" style="width: 250px; height: 28px" disabled="@(!_editState)">
                     @foreach (var item in _organizer.Skills)
                     {
                         <option value="@item.ID.ToString()">@item.Name</option>
@@ -67,7 +67,7 @@
             }
             @if (_organizer.TeamsEnabled)
             {
-                <InputSelect id="team" @bind-Value="_teamId" style="width: 250px; height: 28px">
+                <InputSelect id="team" @bind-Value="_teamId" style="width: 250px; height: 28px" disabled="@(!_editState)">
                     @foreach (var item in _organizer.Teams)
                     {
                         <option value="@item.ID.ToString()">@item.Name</option>
@@ -79,6 +79,7 @@
             
         </div>
     </div>
+    
 </EditForm>
 
 
@@ -87,44 +88,41 @@
     [Parameter]
     public Action Refresh { get; set; }
 
-    private Organizer _organizer;
+    [Parameter]
+    public Competitor SelectedCompetitor { get; set; }
 
-    private Competitor _competitor;
+    private bool _editState = false;
+    
+
+    private Organizer _organizer;
 
     private string _skillId;
     private string _teamId;
 
     protected override async Task OnInitializedAsync()
     {
+        _editState = false;
         var organizerName = await AuthenticationStateProvider.GetUserName();
         _organizer = OrganizerService.GetWithSkillsTeamsByName(organizerName);
-        SetUpNewCompetitor();
-        
-        _competitor = new Competitor
-        {
-            Gender = Gender.Unknown,
-            BirthDate = DateTime.Today
-        };
+        _skillId = SelectedCompetitor.Skill?.ID.ToString();
+        _teamId = SelectedCompetitor.Team?.ID.ToString();
     }
 
     private async Task HandleValidSubmit()
     {
-        var organizerName = await AuthenticationStateProvider.GetUserName();
-        _competitor.Skill = OrganizerService.GetSkillByNameOrDefault(organizerName, _skillId);
-        _competitor.Team = OrganizerService.GetTeamByNameOrDefault(organizerName, _teamId);
+        if (_editState)
+        {
+            var organizerName = await AuthenticationStateProvider.GetUserName();
+            SelectedCompetitor.Skill = OrganizerService.GetSkillByNameOrDefault(organizerName, _skillId);
+            SelectedCompetitor.Team = OrganizerService.GetTeamByNameOrDefault(organizerName, _teamId);
 
-        CompetitorService.Create(_competitor);
-        SetUpNewCompetitor();
+            CompetitorService.Edit(SelectedCompetitor);
+        }
+
+        _editState = !_editState;
+        StateHasChanged();
         Refresh.Invoke();
     }
-
-    private void SetUpNewCompetitor()
-    {
-        _competitor = new Competitor
-        {
-            Organizer = _organizer,
-            Gender = Gender.Unknown
-        };
-    }
+    
 
 }
