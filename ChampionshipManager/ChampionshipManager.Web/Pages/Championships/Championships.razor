@@ -7,28 +7,80 @@
 @inject OrganizerService OrganizerService
 
 
-<a href="/CreateChampionship">Create new Championship</a>
 
-<h4>Championships in progress</h4>
-@foreach (var championship in AllChampionships.Where(c => !c.IsFinished))
-{
-    <a href = "/Championship/@championship.ID" style="padding-left: 5em">@championship.Name</a>
-}
+<AuthorizeView>
+    <Authorized>
 
-<h4>Championships finished</h4>
-@foreach (var championship in AllChampionships.Where(c => c.IsFinished))
-{
-    <a href = "/Championship/@championship.ID" style="padding-left: 5em">@championship.Name</a>
-}
+        <div class="row">
+            <span class="responsiveColumn">
+                <h2>Championships</h2>
+
+                <p>Championship to host tournaments</p>
+                <br/>
+                <div style="font-size: large">
+                    <button class="oi oi-plus" style="width: 250px" @onclick="@(() => SelectChampionship(null))">
+                        <span style="padding-left: 10px">Add new championship</span>
+                    </button>
+                </div>
+                <br/>
+                <br/>
+                <h4>Championships in progress</h4>
+                @foreach (var championship in AllChampionships.Where(c => !c.IsFinished))
+                {
+                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectChampionship(championship))">
+                        <br/>
+                        @championship.Name
+                        <br/>
+                    </button>
+                }
+                
+                <h4>Championships finished</h4>
+                @foreach (var championship in AllChampionships.Where(c => c.IsFinished))
+                {
+                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectChampionship(championship))">
+                        <br/>
+                        @championship.Name
+                        <br/>
+                    </button>
+                }
+
+            </span>
+            <span class="responsiveColumn second">
+                @if (SelectedChampionship == null)
+                {
+                    <CreateChampionship OnCreated="@((championship) => SelectChampionship(championship))"/>
+                }
+                else
+                {
+                    <EditChampionship Refresh="@StateHasChanged" SelectedChampionship="@SelectedChampionship"></EditChampionship>
+                }
+            </span>
+        </div>
+
+    </Authorized>
+
+
+    <NotAuthorized>
+        Please log in.
+    </NotAuthorized>
+</AuthorizeView>
+
 
 @code
 {
     private List<Championship> AllChampionships { get; set; }
+    private Championship SelectedChampionship = null;
     
     protected override async Task OnInitializedAsync()
     {
         var organizerName = await AuthenticationStateProvider.GetUserName();
         AllChampionships = OrganizerService.GetChampionshipsByName(organizerName);
+    }
+    
+    private void SelectChampionship(Championship championship)
+    {
+        SelectedChampionship = championship;
+        StateHasChanged();
     }
 
 }

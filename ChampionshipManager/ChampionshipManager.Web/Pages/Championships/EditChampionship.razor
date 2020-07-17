@@ -1,0 +1,151 @@
+@using ChampionshipManager.Db.Models
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Utils
+@using ChampionshipManager.Web.Pages.Components
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+@inject ChampionshipService ChampionshipService
+@inject OrganizerService OrganizerService
+
+<EditForm Model="@SelectedChampionship" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="row">
+        
+        <div class="responsiveColumn" style="font-size: larger">
+            
+        <button @onclick="@(ChangeFinishState)" style="width: 250px" disabled="@(!_editState)">@(SelectedChampionship.IsFinished ? "Unfinish" : "Finish")</button>
+            <div style="font-size: x-large">Details:</div>
+            <br/>
+            <div>Name</div>
+            <br/>
+            <div>Selected</div>
+            <br/>
+            <div class="multiple-selector-buttons">
+                <button type="button" @onclick="DeselectAll" disabled="@(!_editState)">@removeAllText</button>
+            </div>
+            <ul>
+                @foreach (var item in Selected)
+                {
+                    <li @onclick="@(() => Deselect(item))">@item.Name</li>
+                }
+            </ul>
+            
+<a href = "/Championship/@SelectedChampionship.ID" style="padding-left: 5em">@SelectedChampionship.Name</a>
+        </div>
+        <div class="responsiveColumn" style="font-size: larger">
+
+            <div style="font-size: x-large">
+                <button class="oi oi-check" type="submit" style="width: 250px">
+                    <span style="padding-left: 10px">@(_editState ? "Save" : "Update")</span>
+                </button>
+            </div>
+            <br/>
+            <br/>
+
+            <InputText id="name" @bind-Value="SelectedChampionship.Name" placeholder="Name" style="width: 250px" disabled="@(!_editState)"/>
+
+
+            <br/>
+            <br/>
+            <div>Unselected</div>
+            <br/>
+            <div class="multiple-selector-buttons">
+                <button type="button" @onclick="SelectAll" disabled="@(!_editState)">@addAllText</button>
+            </div>
+            <ul>
+                @foreach (var item in NoSelected)
+                {
+                    <li @onclick="@(() => Select(item))">@item.Name</li>
+                }
+            </ul>
+
+        </div>
+    </div>
+</EditForm>
+
+
+@code{
+
+    [Parameter]
+    public Action Refresh { get; set; }
+
+    [Parameter]
+    public Championship SelectedChampionship { get; set; }
+
+    public List<Competitor> NoSelected { get; set; } = new List<Competitor>();
+    public List<Competitor> Selected { get; set; } = new List<Competitor>();
+
+
+    private string removeAllText = ">>";
+    private string addAllText = "<<";
+    
+    private bool _editState = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var organizerName = await AuthenticationStateProvider.GetUserName();
+        
+        Selected.AddRange(SelectedChampionship.Competitors);
+        NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
+        NoSelected.RemoveAll(x => Selected.Contains(x));
+
+    }
+
+    private void HandleValidSubmit()
+    {
+        if (_editState)
+        {
+            SelectedChampionship.Competitors = Selected;
+
+            ChampionshipService.Edit(SelectedChampionship);
+            Refresh.Invoke();
+        }
+        
+        _editState = !_editState;
+        StateHasChanged();
+        Refresh.Invoke();
+    }
+
+    private void ChangeFinishState()
+    {
+        SelectedChampionship.IsFinished = !SelectedChampionship.IsFinished;
+    }
+    
+
+    private void Select(Competitor item)
+    {
+        if (_editState)
+        {
+
+            NoSelected.Remove(item);
+            Selected.Add(item);
+        }
+    }
+
+    private void Deselect(Competitor item)
+    {
+        if (_editState)
+        {
+            Selected.Remove(item);
+            NoSelected.Add(item);
+        }
+    }
+
+    private void SelectAll()
+    {
+        Selected.AddRange(NoSelected);
+        NoSelected.Clear();
+    }
+
+    private void DeselectAll()
+    {
+        NoSelected.AddRange(Selected);
+        Selected.Clear();
+    }
+
+}
