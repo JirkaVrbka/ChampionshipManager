@@ -7,7 +7,6 @@
 @inject OrganizerService OrganizerService
 
 
-
 <AuthorizeView>
     <Authorized>
 
@@ -18,7 +17,7 @@
                 <p>Championships to host tournaments</p>
                 <br/>
                 <div style="font-size: large">
-                    <button class="oi oi-plus" style="width: 250px" @onclick="@(() => SelectChampionship(null))">
+                    <button class="oi oi-plus" style="font-size: large;width: 250px" @onclick="@(() => SelectChampionship(null))">
                         <span style="padding-left: 10px">Add new championship</span>
                     </button>
                 </div>
@@ -27,13 +26,23 @@
                 <h4>Championships in progress</h4>
                 @foreach (var championship in AllChampionships.Where(c => !c.IsFinished))
                 {
-                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectChampionship(championship))">
-                        <br/>
-                        @championship.Name
-                        <br/>
-                    </button>
+                    <div>
+                        <button style="font-size: large;width: 250px" @onclick="@(() => SelectChampionship(championship))">
+                            <br/>
+                            @championship.Name
+                            <br/>
+                        </button>
+                        <a href="/Championship/@championship.ID">
+                            <button style="font-size: large;width: 50px">
+                                <br/>
+                                >>
+                                <br/>
+                            </button>
+                        </a>
+                    </div>
                 }
-                
+                <br/>
+                <br/>
                 <h4>Championships finished</h4>
                 @foreach (var championship in AllChampionships.Where(c => c.IsFinished))
                 {
@@ -70,13 +79,13 @@
 {
     private List<Championship> AllChampionships { get; set; }
     private Championship SelectedChampionship = null;
-    
+
     protected override async Task OnInitializedAsync()
     {
         var organizerName = await AuthenticationStateProvider.GetUserName();
         AllChampionships = OrganizerService.GetChampionshipsByName(organizerName);
     }
-    
+
     private void SelectChampionship(Championship championship)
     {
         SelectedChampionship = championship;

@@ -19,7 +19,7 @@
                 <p>Championship to host tournaments</p>
                 <br/>
                 <div style="font-size: large">
-                    <button class="oi oi-plus" style="width: 250px" @onclick="@(() => SelectTournament(null))">
+                    <button class="oi oi-plus" style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(null))">
                         <span style="padding-left: 10px">Add new tournament</span>
                     </button>
                 </div>
@@ -28,21 +28,35 @@
                 <h4>Tournament in progress</h4>
                 @foreach (var tournament in CurrentChampionship.Tournaments.Where(c => !c.IsFinished))
                 {
-                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(tournament))">
+                    <div>
+                    <button style="font-size: large;width: 250px;" @onclick="@(() => SelectTournament(tournament))">
                         <br/>
                         @tournament.Name
                         <br/>
                     </button>
+                <a href="/Tournament/@CurrentChampionship.ID/@tournament.ID">
+                    <button style="font-size: large;width: 50px">
+                        <br/>
+                        >>
+                        <br/>
+                    </button>
+                </a>
+                </div>
                 }
 
+                <br/>
+                <br/>
                 <h4>Championships finished</h4>
                 @foreach (var tournament in CurrentChampionship.Tournaments.Where(c => c.IsFinished))
                 {
-                    <button style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(tournament))">
-                        <br/>
-                        @tournament.Name
-                        <br/>
-                    </button>
+                    <div>
+                <button style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(tournament))">
+                    <br/>
+                    @tournament.Name
+                    <br/>
+                </button>
+                </div>
+                    
                 }
 
             </span>
@@ -53,7 +67,6 @@
                 }
                 else
                 {
-                    <a href = "/Tournament/@CurrentChampionship.ID/@SelectedTournament.ID" style="padding-left: 5em">@SelectedTournament.Name</a>
                     <EditTournament Refresh="@StateHasChanged" SelectedTournament="@SelectedTournament" ParentChampionship="@CurrentChampionship"></EditTournament>
                     
                 }
