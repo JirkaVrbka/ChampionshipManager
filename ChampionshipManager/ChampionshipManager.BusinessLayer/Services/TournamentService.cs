@@ -114,9 +114,9 @@ namespace ChampionshipManager.BusinessLayer.Services
         private List<Game> CreateSpiderGames(Tournament tournament)
         { //TODO
             // Create spider bottom
-            int tierZeroCount = (int) Math.Ceiling(Math.Log2(tournament.Competitors.Count));
+            int tierZeroCount = HighestSmallerPowerOfTwo(tournament.Competitors.Count);
             var tierZeroGames = new List<Game>();
-            for (int i = 0; i < tierZeroCount; i++)
+            for (int i = 0; i <= tierZeroCount; i++)
             {
                 tierZeroGames.Add(
                     new Game
@@ -130,13 +130,13 @@ namespace ChampionshipManager.BusinessLayer.Services
             // Fill zero tier with players
             for (int i = 0; i < tournament.Competitors.Count; i++)
             {
-                if (i < tierZeroCount)
+                if (i <= tierZeroCount)
                 {
                     tierZeroGames[i].PlayerOne = tournament.Competitors[i];
                 }
                 else
                 {
-                    tierZeroGames[i % tierZeroCount].PlayerTwo = tournament.Competitors[i];
+                    tierZeroGames[i % (tierZeroCount + 1)].PlayerTwo = tournament.Competitors[i];
                 }
             }
 
@@ -162,5 +162,18 @@ namespace ChampionshipManager.BusinessLayer.Services
             result.AddRange(higherTierGames);
             return result;
         }
+
+
+        private int HighestSmallerPowerOfTwo(int limit)
+        {
+            double i = 1;
+            while (((int) i^2) < limit)
+            {
+                i++;
+            }
+
+            return (int)i - 1;
+        }
     }
+    
 }

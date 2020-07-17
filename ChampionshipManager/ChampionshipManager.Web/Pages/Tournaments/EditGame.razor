@@ -33,9 +33,9 @@
                 </button>
             </div>
             <br/>
-            <div>@(SelectedGame.PlayerOne?.Name ?? "TBD")</div>
+            <div>@(SelectedGame.PlayerOne?.Name ?? (SelectedGame.Winner == null ? "TBD" : "free pass"))</div>
             <br/>
-            <div>@(SelectedGame.PlayerTwo?.Name ?? "TBD")</div>
+            <div>@(SelectedGame.PlayerTwo?.Name ?? (SelectedGame.Winner == null ? "TBD" : "free pass"))</div>
 
             <br/>
             <div>

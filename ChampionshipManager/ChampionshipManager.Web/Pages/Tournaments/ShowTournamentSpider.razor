@@ -49,7 +49,7 @@
                 @foreach (var game in Games.FindAll(g => g.Round == round))
                 {
                     <button style="font-size: large;width: 250px" @onclick="@(() => SelectGame(game))">
-                        <span>@(game.PlayerOne?.Name ?? "TBD")</span> vs <span>@(game.PlayerTwo?.Name ?? "TBD")</span>
+                        <span>@(game.PlayerOne?.Name ?? (game.Winner == null ? "TBD" : "free pass"))</span> vs <span>@(game.PlayerTwo?.Name ?? (game.Winner == null ? "TBD" : "free pass"))</span>
                         <br/>
                         @if (game.PlayerOneScore != 0 || game.PlayerTwoScore != 0)
                         {
