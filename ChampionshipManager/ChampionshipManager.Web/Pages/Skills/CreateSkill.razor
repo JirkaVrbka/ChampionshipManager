@@ -8,16 +8,15 @@
 
 @namespace ChampionshipManager.Web.Pages.Skills
 
-Create new skill:<br/>
 
         <EditForm Model="@_skill" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator/>
             <ValidationSummary/>
 
-            <InputText id="name" @bind-Value="_skill.Name"/>
+            <InputText id="name" @bind-Value="_skill.Name" placeholder="Add new level"/>
             <InputNumber id="order" @bind-Value="_skill.Order"/>
 
-            <button type="submit">Submit</button>
+            <button class="oi oi-check" type="submit" style="height: 27px"></button>
         </EditForm>
 
 

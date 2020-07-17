@@ -47,7 +47,8 @@ app {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    /*background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%); TODO remove*/
+    background-image: linear-gradient(90deg, #191970 93%, #F0F8FF 100%);
 }
 
     .sidebar .top-row {
@@ -192,8 +193,8 @@ app {
 }
 
 .responsiveColumn.second{
-    color: #d7d7d7;
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(90deg, #FFFFFF 0%,#ADD8E6 20%);
+    padding-left: 100px;
 }
 
 /* Clear floats after the columns */
@@ -204,8 +205,20 @@ app {
 }
 
 /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1200px) {
     .responsiveColumn {
         width: 100%;
     }
+}
+
+input[type='checkbox'] {
+    -webkit-appearance:none;
+    width:30px;
+    height:30px;
+    background:white;
+    border-radius:5px;
+    border:2px solid #555;
+}
+input[type='checkbox']:checked {
+    background: #abd;
 }

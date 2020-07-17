@@ -1,32 +1,38 @@
-@page "/Skills"
 @using ChampionshipManager.Db.Models
 @using ChampionshipManager.Web.Utils
 @using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Pages.Components
+
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject OrganizerService OrganizerService
+@inject SkillService SkillService
 
 @namespace ChampionshipManager.Web.Pages.Skills
 
-<AuthorizeView>
-    <Authorized>
-        <CreateSkill Refresh="@Refresh"/>
-        
+<br/>
         <br/>
-        <br/>
-        Created skills: <br/>
-        @foreach (var skill in AllSkills)
-        {
-            @skill.Name<br/>
-            
-            <div style="padding-left: 5em">@skill.Order</div><br/>
-        }
-    </Authorized>
+        <div style="font-size: larger">Levels:</div> 
+        <div>
+            <ul class="nav flex-column">
+                <li class="nav-item px-3">
+                    <div class="nav-link active" >
+                        <CreateSkill Refresh="@Refresh"/>
+                    </div>
+                </li>
+                @foreach (var skill in AllSkills)
+                        {
+                            <li class="nav-item px-3">
+                                <div class="nav-link">
+                                    
+                                    <EditSkill Skill="@skill" OnRemove="@(() => RemoveSkill(skill))"></EditSkill>
+                                    
+                                </div>
+                            </li>
+                            
+                        }
+            </ul>
+        </div>
 
-
-    <NotAuthorized>
-        Please log in.
-    </NotAuthorized>
-</AuthorizeView>
 
 @code
 {
@@ -37,7 +43,13 @@
         var organizerName = await AuthenticationStateProvider.GetUserName();
         AllSkills = OrganizerService.GetSkillsByName(organizerName);
     }
-
+    
+    private void RemoveSkill(Skill skill)
+    {
+        AllSkills.Remove(skill);
+        SkillService.Delete(skill);
+    }
+    
     private void Refresh()
     {
         StateHasChanged();

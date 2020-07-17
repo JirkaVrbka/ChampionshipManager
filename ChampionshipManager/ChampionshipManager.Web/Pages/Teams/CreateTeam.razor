@@ -8,15 +8,11 @@
 
 @namespace ChampionshipManager.Web.Pages.Teams
 
-Create new team:<br/>
 
 <EditForm Model="@_team" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
-
-    <InputText id="name" @bind-Value="_team.Name"/>
-
-    <button type="submit">Submit</button>
+    <InputText id="name" @bind-Value="_team.Name" placeholder="Add new team"/><button class="oi oi-check" type="submit" style="height: 27px"></button>
 </EditForm>
 
 

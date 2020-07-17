@@ -1,0 +1,43 @@
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Db.Models
+@inject TeamService TeamService
+
+@namespace ChampionshipManager.Web.Pages.Components
+
+@if (_editableState)
+{
+    <button class="oi oi-minus" aria-hidden="true" style="height: 30px" disabled></button>
+    <button class="oi oi-pencil" aria-hidden="true" style="height: 30px" disabled></button>
+    <EditForm Model="@Team" OnValidSubmit="@HandleValidSubmit" style="display: inline">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <InputText id="team-name" @bind-Value="Team.Name" placeholder="@Team.Name"/><button class="oi oi-check" type="submit" style="height: 27px"></button>
+    </EditForm>
+}
+else
+{
+    <button class="oi oi-minus" aria-hidden="true" style="height: 30px" @onclick="@(OnRemove)"></button>
+    <button class="oi oi-pencil" aria-hidden="true" style="height: 30px" @onclick="@(OnEditClick)"></button>
+    @Team.Name
+}
+@code
+{
+    [Parameter]
+    public Team Team { get; set; }
+
+    [Parameter]
+    public Action OnRemove { get; set; }
+
+    private bool _editableState = false;
+
+    private void OnEditClick()
+    {
+        _editableState = true;
+    }
+
+    private void HandleValidSubmit()
+    {
+        TeamService.Edit(Team);
+        _editableState = false;
+    }
+}

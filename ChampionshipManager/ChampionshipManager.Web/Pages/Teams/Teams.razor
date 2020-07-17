@@ -1,24 +1,40 @@
-@page "/Teams"
 @using ChampionshipManager.Db.Models
 @using ChampionshipManager.Web.Utils
 @using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Web.Pages.Components
+
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject OrganizerService OrganizerService
+@inject TeamService TeamService
 
 @namespace ChampionshipManager.Web.Pages.Teams
 
 <AuthorizeView>
     <Authorized>
-        <CreateTeam Refresh="@Refresh"/>
+        <br/>
+        <br/>
+        <div style="font-size: larger">Teams:</div> 
+        <div>
+            <ul class="nav flex-column">
+                <li class="nav-item px-3">
+                    <div class="nav-link active" >
+                        <CreateTeam Refresh="@Refresh"/>
+                    </div>
+                </li>
+                @foreach (var team in AllTeams)
+                        {
+                            <li class="nav-item px-3">
+                                <div class="nav-link">
+                                    
+                                    <EditTeam Team="@team" OnRemove="@(() => RemoveTeam(team))"></EditTeam>
+                                    
+                                </div>
+                            </li>
+                            
+                        }
+            </ul>
+        </div>
         
-        <br/>
-        <br/>
-        Created teams: <br/>
-        @foreach (var team in AllTeams)
-        {
-            @team.Name<br/>
-            
-        }
     </Authorized>
 
 
@@ -35,6 +51,13 @@
     {
         var organizerName = await AuthenticationStateProvider.GetUserName();
         AllTeams = OrganizerService.GetTeamsByName(organizerName);
+    }
+
+    private void RemoveTeam(Team team)
+    {
+        AllTeams.Remove(team);
+        TeamService.Delete(team);
+        StateHasChanged();
     }
 
     private void Refresh()

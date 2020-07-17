@@ -1,0 +1,44 @@
+@using ChampionshipManager.BusinessLayer.Services
+@using ChampionshipManager.Db.Models
+@inject SkillService SkillService
+
+@namespace ChampionshipManager.Web.Pages.Components
+
+@if (_editableState)
+{
+    <button class="oi oi-minus" aria-hidden="true" style="height: 30px" disabled></button>
+    <button class="oi oi-pencil" aria-hidden="true" style="height: 30px" disabled></button>
+    <EditForm Model="@Skill" OnValidSubmit="@HandleValidSubmit" style="display: inline">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <InputText id="skill-name" @bind-Value="Skill.Name" placeholder="@Skill.Name"/>
+        <InputNumber id="skill-order" @bind-Value="Skill.Order" placeholder="@Skill.Order"/><button class="oi oi-check" type="submit" style="height: 27px"></button>
+    </EditForm>
+}
+else
+{
+    <button class="oi oi-minus" aria-hidden="true" style="height: 30px" @onclick="@(OnRemove)"></button>
+    <button class="oi oi-pencil" aria-hidden="true" style="height: 30px" @onclick="@(OnEditClick)"></button>
+    @Skill.Name <span>(@Skill.Order)</span>
+}
+@code
+{
+    [Parameter]
+    public Skill Skill { get; set; }
+
+    [Parameter]
+    public Action OnRemove { get; set; }
+
+    private bool _editableState = false;
+
+    private void OnEditClick()
+    {
+        _editableState = true;
+    }
+
+    private void HandleValidSubmit()
+    {
+        SkillService.Edit(Skill);
+        _editableState = false;
+    }
+}
