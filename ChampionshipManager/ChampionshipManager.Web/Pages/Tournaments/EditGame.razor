@@ -39,12 +39,12 @@
 
             <br/>
             <div>
-                <InputNumber id="player-one-score" @bind-Value="SelectedGame.PlayerOneScore"/>
+                <InputNumber id="player-one-score" @bind-Value="SelectedGame.PlayerOneScore" disabled="@(!_editState)"/>
             </div>
 
             <br/>
             <div>
-                <InputNumber id="player-two-score" @bind-Value="SelectedGame.PlayerTwoScore"/>
+                <InputNumber id="player-two-score" @bind-Value="SelectedGame.PlayerTwoScore" disabled="@(!_editState)"/>
             </div>
 
 

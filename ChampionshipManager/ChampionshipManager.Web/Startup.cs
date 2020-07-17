@@ -1,3 +1,4 @@
+using ChampionshipManager.BusinessLayer.Facades;
 using ChampionshipManager.BusinessLayer.Services;
 using ChampionshipManager.Db.Context;
 using ChampionshipManager.Db.Repository;
@@ -66,6 +67,8 @@ namespace ChampionshipManager.Web
             services.AddSingleton<TournamentService>();
             services.AddSingleton<GameService>();
             services.AddSingleton<TeamService>();
+
+            services.AddSingleton<TournamentFacade>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
