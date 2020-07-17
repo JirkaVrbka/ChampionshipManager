@@ -57,30 +57,30 @@
     }
 
 
-    async Task ChangeBirthEnabled()
+    void ChangeBirthEnabled()
     {
         _organizer.BirthEnabled = !_organizer.BirthEnabled;
-        await OrganizerService.EditAsync(_organizer);
+        OrganizerService.Edit(_organizer);
     }
 
-    async Task ChangeSkillEnabled()
+    void ChangeSkillEnabled()
     {
         _organizer.SkillsEnabled = !_organizer.SkillsEnabled;
         SetSkillsDisplay(_organizer.SkillsEnabled);
-        await OrganizerService.EditAsync(_organizer);
+        OrganizerService.Edit(_organizer);
     }
 
-    async Task ChangeGenderEnabled()
+    void ChangeGenderEnabled()
     {
         _organizer.GenderEnabled = !_organizer.GenderEnabled;
-        await OrganizerService.EditAsync(_organizer);
+        OrganizerService.Edit(_organizer);
     }
 
-    async Task ChangeTeamEnabled()
+    void ChangeTeamEnabled()
     {
         _organizer.TeamsEnabled = !_organizer.TeamsEnabled;
         SetTeamsDisplay(_organizer.TeamsEnabled);
-        await OrganizerService.EditAsync(_organizer);
+        OrganizerService.Edit(_organizer);
     }
 
     void SetTeamsDisplay(bool value) => _teamsDisplay = "display: " + (value ? "block" : "none");

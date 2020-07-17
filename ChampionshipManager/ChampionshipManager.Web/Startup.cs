@@ -31,9 +31,9 @@ namespace ChampionshipManager.Web
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
             
-            // services.AddDbContext<ChampionshipManagerContext>(options =>
-            //     options.UseSqlite("Filename=./manager.db"), ServiceLifetime.Singleton);
-            //
+            services.AddDbContext<ChampionshipManagerContext>(options =>
+                options.UseSqlite("Filename=./manager.db"), ServiceLifetime.Singleton);
+            
             services.AddDefaultIdentity<IdentityUser>(options =>
                 { // TODO
                     options.SignIn.RequireConfirmedAccount = false;
@@ -51,13 +51,13 @@ namespace ChampionshipManager.Web
                 .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>
                 >();
             
-            // services.AddSingleton<OrganizerRepository>();
-            // services.AddSingleton<CompetitorRepository>();
-            // services.AddSingleton<SkillRepository>();
-            // services.AddSingleton<ChampionshipRepository>();
-            // services.AddSingleton<TournamentRepository>();
-            // services.AddSingleton<GameRepository>();
-            // services.AddSingleton<TeamRepository>();
+            services.AddSingleton<OrganizerRepository>();
+            services.AddSingleton<CompetitorRepository>();
+            services.AddSingleton<SkillRepository>();
+            services.AddSingleton<ChampionshipRepository>();
+            services.AddSingleton<TournamentRepository>();
+            services.AddSingleton<GameRepository>();
+            services.AddSingleton<TeamRepository>();
 
             services.AddSingleton<OrganizerService>();
             services.AddSingleton<ChampionshipService>();

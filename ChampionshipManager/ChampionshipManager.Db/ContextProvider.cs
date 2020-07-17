@@ -2,13 +2,20 @@ using System;
 using System.Threading;
 using ChampionshipManager.Db.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 namespace ChampionshipManager.Db
 {
     public class ContextProvider : IContextProvider
     {
-        protected readonly AsyncLocal<ChampionshipManagerContext> UowLocalInstance
-            = new AsyncLocal<ChampionshipManagerContext>();
+        public static readonly ILoggerFactory DbCommandConsoleLoggerFactory
+            = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
+
+        protected static ChampionshipManagerContext UowLocalInstance = null;
 
         /// <summary>
         /// Creates a new unit of work.
@@ -17,11 +24,14 @@ namespace ChampionshipManager.Db
         {
             var optionBuilder = new DbContextOptionsBuilder<ChampionshipManagerContext>();
             optionBuilder.UseSqlite("Filename=./manager.db");
-            UowLocalInstance.Value = new ChampionshipManagerContext(
+            optionBuilder.UseLoggerFactory(DbCommandConsoleLoggerFactory);
+            optionBuilder.EnableSensitiveDataLogging();
+            
+            UowLocalInstance = new ChampionshipManagerContext(
                 optionBuilder.Options
             );
 
-            return UowLocalInstance.Value;
+            return UowLocalInstance;
         }
 
         /// <summary>
@@ -29,13 +39,13 @@ namespace ChampionshipManager.Db
         /// </summary>
         public ChampionshipManagerContext GetUnitOfWorkInstance()
         {
-            return UowLocalInstance != null ? UowLocalInstance.Value : throw new InvalidOperationException("Context not created");
+            return UowLocalInstance != null ? UowLocalInstance : throw new InvalidOperationException("Context not created");
         }
 
         public void Dispose()
         {
-            UowLocalInstance.Value?.Dispose();
-            UowLocalInstance.Value = null;
+            UowLocalInstance?.Dispose();
+            UowLocalInstance = null;
         }
     }
 }

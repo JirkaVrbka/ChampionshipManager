@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ChampionshipManager.Db.Models;
 using ChampionshipManager.Db.Repository;
 
@@ -7,7 +8,7 @@ namespace ChampionshipManager.BusinessLayer.Services
 {
     public class TournamentService : AService<Tournament>
     {
-        public TournamentService() : base((provider) => new TournamentRepository(provider))
+        public TournamentService(TournamentRepository repository) : base(repository)
         {
         }
 

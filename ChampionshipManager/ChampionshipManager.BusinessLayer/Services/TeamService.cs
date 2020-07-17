@@ -5,7 +5,7 @@ namespace ChampionshipManager.BusinessLayer.Services
 {
     public class TeamService : AService<Team>
     {
-        public TeamService() : base((provider) => new TeamRepository(provider))
+        public TeamService(TeamRepository repository) : base(repository)
         {
         }
         

@@ -37,6 +37,9 @@ Create new skill:<br/>
     private void HandleValidSubmit()
     {
         SkillService.Create(_skill);
+        var org = _skill.Organizer;
+        _skill = new Skill();
+        _skill.Organizer = org;
         Refresh?.Invoke();
     }
 

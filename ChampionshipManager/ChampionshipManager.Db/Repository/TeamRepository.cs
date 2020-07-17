@@ -13,7 +13,10 @@ namespace ChampionshipManager.Db.Repository
             nameof(Team.Organizer)
         };
 
-        public TeamRepository(IContextProvider provider) : base(provider)
+        // public TeamRepository(IContextProvider provider) : base(provider)
+        // {
+        // }
+        public TeamRepository(ChampionshipManagerContext context) : base(context)
         {
         }
     }

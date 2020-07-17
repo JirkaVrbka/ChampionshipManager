@@ -8,7 +8,10 @@ namespace ChampionshipManager.Db.Repository
     {
         public override List<string> Includes { get; } = new List<string>{ nameof(Skill.Organizer)};
 
-        public SkillRepository(IContextProvider provider) : base(provider)
+        // public SkillRepository(IContextProvider provider) : base(provider)
+        // {
+        // }
+        public SkillRepository(ChampionshipManagerContext context) : base(context)
         {
         }
     }

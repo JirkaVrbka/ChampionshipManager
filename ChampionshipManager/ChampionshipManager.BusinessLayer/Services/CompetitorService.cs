@@ -6,7 +6,7 @@ namespace ChampionshipManager.BusinessLayer.Services
 {
     public class CompetitorService: AService<Competitor>
     {
-        public CompetitorService() : base((provider) => new CompetitorRepository(provider))
+        public CompetitorService(CompetitorRepository repository) : base(repository)
         {
         }
     }

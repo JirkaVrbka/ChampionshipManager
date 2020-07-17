@@ -36,6 +36,10 @@ Create new team:<br/>
     private void HandleValidSubmit()
     {
         TeamService.Create(_team);
+        
+        var org = _team.Organizer;
+        _team = new Team();
+        _team.Organizer = org;
         Refresh?.Invoke();
     }
 

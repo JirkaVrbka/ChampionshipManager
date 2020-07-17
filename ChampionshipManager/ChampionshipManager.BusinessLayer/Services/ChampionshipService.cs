@@ -8,7 +8,7 @@ namespace ChampionshipManager.BusinessLayer.Services
 {
     public class ChampionshipService : AService<Championship>
     {
-        public ChampionshipService() : base((provider) => new ChampionshipRepository(provider))
+        public ChampionshipService(ChampionshipRepository repository) : base(repository)
         {
         }
         
@@ -26,10 +26,8 @@ namespace ChampionshipManager.BusinessLayer.Services
         
         private Championship GetWithIncludes(Guid championshipId, List<string> includes = null)
         {
-            using (ContextProvider.Create())
-            {
                 return Repository.Filter(c => c.ID == championshipId, includes).Single();
-            }
+            
         }
 
     }

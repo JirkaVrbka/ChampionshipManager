@@ -39,7 +39,7 @@ Create new tournament
 
     private readonly Tournament _tournament = new Tournament();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         SetupTournamentForCreation();
     }

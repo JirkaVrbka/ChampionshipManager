@@ -42,7 +42,7 @@ else
 
     private Tournament? _tournament;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         _tournament = TournamentService.GetWithAllIncludes(TournamentId);
         if (_tournament?.Championship.ID.ToString() != ChampionshipId)

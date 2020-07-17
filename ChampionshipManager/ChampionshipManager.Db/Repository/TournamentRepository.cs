@@ -13,7 +13,10 @@ namespace ChampionshipManager.Db.Repository
             nameof(Tournament.Games)
         };
 
-        public TournamentRepository(IContextProvider provider) : base(provider)
+        // public TournamentRepository(IContextProvider provider) : base(provider)
+        // {
+        // }
+        public TournamentRepository(ChampionshipManagerContext context) : base(context)
         {
         }
     }

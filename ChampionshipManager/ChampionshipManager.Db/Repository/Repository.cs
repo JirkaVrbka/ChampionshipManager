@@ -10,11 +10,12 @@ namespace ChampionshipManager.Db.Repository
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity
     {
-        protected ChampionshipManagerContext Context => _provider.GetUnitOfWorkInstance();
+        protected readonly ChampionshipManagerContext Context;// => _provider.GetUnitOfWorkInstance();
 
-        private readonly IContextProvider _provider;
-
-        public Repository(IContextProvider provider) => _provider = provider;
+        // private readonly IContextProvider _provider;
+        //
+        // public Repository(IContextProvider provider) => _provider = provider;
+        public Repository(ChampionshipManagerContext context) => Context = context;
 
         public Guid Create(TEntity entity)
         {
@@ -46,11 +47,11 @@ namespace ChampionshipManager.Db.Repository
             SaveChanges();
         }
 
-        public async Task EditAsync(TEntity entity)
+        public void EditAsync(TEntity entity)
         {
             var editedEntity = Context.Set<TEntity>().FirstOrDefault(e => e.ID == entity.ID);
             editedEntity = entity;
-            await SaveChangesAsync();
+            SaveChanges();
         }
 
         public TEntity GetById(Guid id)
@@ -88,7 +89,7 @@ namespace ChampionshipManager.Db.Repository
             return query.AsEnumerable().Where(predicate);
         }
 
+        //public void SaveChanges() => Context.SaveChanges();
         public void SaveChanges() => Context.SaveChanges();
-        public async Task SaveChangesAsync() => await Context.SaveChangesAsync();
     }
 }
