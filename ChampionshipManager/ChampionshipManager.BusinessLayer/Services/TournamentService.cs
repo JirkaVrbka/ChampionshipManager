@@ -51,7 +51,15 @@ namespace ChampionshipManager.BusinessLayer.Services
             return games;
         }
 
-        public void ProcessSpiderGames(ref Tournament tournament)
+        public void ProcessSpiderGamesAndEdit(string id)
+        {
+            if (Guid.TryParse(id, out var guid))
+            {
+                Edit(ProcessSpiderGames(GetById(guid)));
+            }
+        }
+
+        public Tournament ProcessSpiderGames(Tournament tournament)
         {
             //Default winners
             foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne == null && g.PlayerTwo != null))
@@ -97,6 +105,8 @@ namespace ChampionshipManager.BusinessLayer.Services
                 }
 
             }
+
+            return tournament;
         }
         
         private List<Game> CreateSpiderGames(Tournament tournament)
