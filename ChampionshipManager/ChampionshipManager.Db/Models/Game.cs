@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChampionshipManager.Db.Models
 {
@@ -8,8 +9,11 @@ namespace ChampionshipManager.Db.Models
 
         public Competitor PlayerOne { get; set; }
         public int PlayerOneScore { get; set; }
+        
         public Competitor PlayerTwo { get; set; }
         public int PlayerTwoScore { get; set; }
+
+        public int Round { get; set; }
 
         public Competitor Winner { get; set; }
 

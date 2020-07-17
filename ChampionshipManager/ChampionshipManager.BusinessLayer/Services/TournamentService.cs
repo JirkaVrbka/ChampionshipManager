@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ChampionshipManager.Db.Models;
 using ChampionshipManager.Db.Repository;
@@ -41,35 +42,77 @@ namespace ChampionshipManager.BusinessLayer.Services
                         PlayerOne = competitors[i],
                         PlayerTwo = competitors[j],
                         PlayerOneScore = 0,
-                        PlayerTwoScore = 0
+                        PlayerTwoScore = 0,
+                        Round = 0
                     });
                 }
             }
 
             return games;
         }
+
+        public void ProcessSpiderGames(ref Tournament tournament)
+        {
+            var tiers = tournament.Games.GroupBy(
+                g => g.Round,
+                g => g,
+                (round, games) => new {round, games}).ToList();
+            
+            
+            
+            
+        }
         
         private List<Game> CreateSpiderGames(Tournament tournament)
         { //TODO
-            List<Game> games = new List<Game>();
-
-            for (int i = 0; i < tournament.Competitors.Count; i += 2)
+            // Create spider bottom
+            int tierZeroCount = (int) Math.Ceiling(Math.Log2(tournament.Competitors.Count));
+            var tierZeroGames = new List<Game>();
+            for (int i = 0; i < tierZeroCount; i++)
             {
-                var game = new Game
+                tierZeroGames.Add(
+                    new Game
+                    {
+                        Tournament = tournament,
+                        Round = 0
+                    }
+                    );
+            }
+
+            // Fill zero tier with players
+            for (int i = 0; i < tournament.Competitors.Count; i++)
+            {
+                if (i < tierZeroCount)
                 {
-                    Tournament = tournament,
-                    PlayerOneScore = 0,
-                    PlayerTwoScore = 0,
-                    PlayerOne = tournament.Competitors[i],
-                    PlayerTwo = tournament.Competitors.Count > i + 1 ? 
-                        tournament.Competitors[i + 1] :
-                        null
-                };
+                    tierZeroGames[i].PlayerOne = tournament.Competitors[i];
+                }
+                else
+                {
+                    tierZeroGames[i % tierZeroCount].PlayerTwo = tournament.Competitors[i];
+                }
+            }
+
+            var higherTierCount = tierZeroCount - 1;
+            // Create higher tier games
+            var higherTierGames = new List<Game>();
+            for (int i = 0; i < higherTierCount; i++)
+            {
+                for (int j = 0; j < Math.Pow(2,i); j++)
+                {
+                    higherTierGames.Add(
+                        new Game
+                        {
+                            Tournament = tournament,
+                            Round = higherTierCount - i
+                        }
+                    );
+                }
                 
-                games.Add(game);
             }
             
-            return games;
+            var result = new List<Game>(tierZeroGames);
+            result.AddRange(higherTierGames);
+            return result;
         }
     }
 }

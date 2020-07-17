@@ -16,7 +16,7 @@ namespace ChampionshipManager.Db.Context
         public ChampionshipManagerContext(DbContextOptions<ChampionshipManagerContext> options) : base(options)
         {
             // TODO remove deleting of DB
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         

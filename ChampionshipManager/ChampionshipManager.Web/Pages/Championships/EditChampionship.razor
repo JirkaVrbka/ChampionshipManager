@@ -14,10 +14,10 @@
     <ValidationSummary/>
 
     <div class="row">
-        
+
         <div class="responsiveColumn" style="font-size: larger">
-            
-        <button @onclick="@(ChangeFinishState)" style="width: 250px" disabled="@(!_editState)">@(SelectedChampionship.IsFinished ? "Unfinish" : "Finish")</button>
+
+            <button @onclick="@(ChangeFinishState)" style="width: 250px" disabled="@(!_editState)">@(SelectedChampionship.IsFinished ? "Unfinish" : "Finish")</button>
             <div style="font-size: x-large">Details:</div>
             <br/>
             <div>Name</div>
@@ -33,8 +33,8 @@
                     <li @onclick="@(() => Deselect(item))">@item.Name</li>
                 }
             </ul>
-            
-<a href = "/Championship/@SelectedChampionship.ID" style="padding-left: 5em">@SelectedChampionship.Name</a>
+
+            <a href="/Championship/@SelectedChampionship.ID" style="padding-left: 5em">@SelectedChampionship.Name</a>
         </div>
         <div class="responsiveColumn" style="font-size: larger">
 
@@ -82,7 +82,7 @@
 
     private string removeAllText = ">>";
     private string addAllText = "<<";
-    
+
     private bool _editState = false;
 
 
@@ -91,8 +91,8 @@
         Selected.Clear();
         NoSelected.Clear();
         var organizerName = await AuthenticationStateProvider.GetUserName();
-        
-        
+
+
         Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
         NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
         NoSelected.RemoveAll(x => Selected.Contains(x));
@@ -106,21 +106,21 @@
             SelectedChampionship.Competitors = Selected;
 
             ChampionshipService.Edit(SelectedChampionship);
-            
+
             Selected.Clear();
             NoSelected.Clear();
-            
+
             var organizerName = await AuthenticationStateProvider.GetUserName();
-        
-        
+
+
             Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
             NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
             NoSelected.RemoveAll(x => Selected.Contains(x));
-            
+
             StateHasChanged();
             Refresh.Invoke();
         }
-        
+
         _editState = !_editState;
     }
 
@@ -128,13 +128,12 @@
     {
         SelectedChampionship.IsFinished = !SelectedChampionship.IsFinished;
     }
-    
+
 
     private void Select(Competitor item)
     {
         if (_editState)
         {
-
             NoSelected.Remove(item);
             Selected.Add(item);
         }
