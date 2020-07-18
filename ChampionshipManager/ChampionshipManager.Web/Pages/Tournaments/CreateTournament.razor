@@ -101,10 +101,10 @@
         _tournament.IsFinished = false;
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
         _tournament.Competitors = Selected;
-        TournamentService.Create(_tournament);
+        await TournamentService.Create(_tournament);
         OnCreated.Invoke(_tournament);
     }
 

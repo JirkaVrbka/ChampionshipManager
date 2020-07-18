@@ -26,7 +26,7 @@ else
     public Team Team { get; set; }
 
     [Parameter]
-    public Action OnRemove { get; set; }
+    public Func<Task> OnRemove { get; set; }
 
     private bool _editableState = false;
 
@@ -35,9 +35,9 @@ else
         _editableState = true;
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        TeamService.Edit(Team);
+        await TeamService.Edit(Team);
         _editableState = false;
     }
 }

@@ -116,7 +116,7 @@
             SelectedCompetitor.Skill = OrganizerService.GetSkillByNameOrDefault(organizerName, _skillId);
             SelectedCompetitor.Team = OrganizerService.GetTeamByNameOrDefault(organizerName, _teamId);
 
-            CompetitorService.Edit(SelectedCompetitor);
+            await CompetitorService.Edit(SelectedCompetitor);
         }
 
         _editState = !_editState;

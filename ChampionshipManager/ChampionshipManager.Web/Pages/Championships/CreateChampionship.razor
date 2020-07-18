@@ -92,11 +92,11 @@
         _championship.Organizer = OrganizerService.GetByName(organizerName);
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
         _championship.Competitors.AddRange(Selected);
 
-        var id = ChampionshipService.Create(_championship);
+        var id = await ChampionshipService.Create(_championship);
         var created = ChampionshipService.GetById(id);
         OnCreated.Invoke(created);
     }

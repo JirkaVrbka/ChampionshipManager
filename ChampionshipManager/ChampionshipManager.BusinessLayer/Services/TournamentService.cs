@@ -13,7 +13,12 @@ namespace ChampionshipManager.BusinessLayer.Services
         {
         }
 
-        public override Guid Create(Tournament entity)
+        public List<Competitor> GetCompetitors(Guid id)
+        {
+            return Repository.Filter(t => t.ID == id, new List<string> {nameof(Tournament.Competitors)}).Single().Competitors;
+        }
+
+        public override async Task<Guid> Create(Tournament entity)
         {
             switch (entity.TournamentType)
             {
@@ -25,7 +30,7 @@ namespace ChampionshipManager.BusinessLayer.Services
                     break;
             }
 
-            return base.Create(entity);
+            return await base.Create(entity);
         }
 
         private List<Game> CreateAgainstEverybodyGames(Tournament tournament)
@@ -51,11 +56,11 @@ namespace ChampionshipManager.BusinessLayer.Services
             return games;
         }
 
-        public void ProcessSpiderGamesAndEdit(string id)
+        public async Task ProcessSpiderGamesAndEdit(string id)
         {
             if (Guid.TryParse(id, out var guid))
             {
-                Edit(ProcessSpiderGames(GetById(guid)));
+                await Edit(ProcessSpiderGames(GetById(guid)));
             }
         }
 
@@ -112,7 +117,7 @@ namespace ChampionshipManager.BusinessLayer.Services
         }
         
         private List<Game> CreateSpiderGames(Tournament tournament)
-        { //TODO
+        {
             // Create spider bottom
             int tierZeroCount = HighestSmallerPowerOfTwo(tournament.Competitors.Count);
             var tierZeroGames = new List<Game>();

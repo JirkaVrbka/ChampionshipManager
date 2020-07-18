@@ -4,59 +4,7 @@
 
 @inject TournamentService TournamentService
 @inject GameService GameService
-@* *@
-@* <div class="row"> *@
-@*     <div class="responsiveColumn" style="font-size: larger"> *@
-@* *@
-@*         <h3>Statistics</h3> *@
-@*         @{ *@
-@*             var places = GetPlaces(); *@
-@*             var firstPlace = places.Item1; *@
-@*             var secondPlace = places.Item2; *@
-@*             var thirdPlace = places.Item3; *@
-@* *@
-@*             <h4>1st place</h4> *@
-@*             foreach (var place in firstPlace) *@
-@*             { *@
-@*                 <span style="padding-left: 10px">@place</span> *@
-@*             } *@
-@*             <br/> *@
-@*              *@
-@*             <h4>2nd place</h4> *@
-@*             foreach (var place in secondPlace) *@
-@*             { *@
-@*                 <span style="padding-left: 10px">@place</span> *@
-@*             } *@
-@*             <br/> *@
-@*              *@
-@*             <h4>3rd place</h4> *@
-@*             foreach (var place in thirdPlace) *@
-@*             { *@
-@*                 <span style="padding-left: 10px">@place</span> *@
-@*             } *@
-@*             <br/> *@
-@*         } *@
-@*          *@
-@*         <h3>Matches</h3> *@
-@*         @foreach (var game in Games) *@
-@*         { *@
-@*             <button style="font-size: large;width: 250px" @onclick="@(() => SelectGame(game))"> *@
-@*                 <span>@game.PlayerOne.Name</span> vs <span>@game.PlayerTwo.Name</span> *@
-@*                 <br/> *@
-@*                 <span>@game.PlayerOneScore</span> : <span>@game.PlayerTwoScore</span> *@
-@*             </button> *@
-@*         } *@
-@*     </div> *@
-@* *@
-@*     <div class="responsiveColumn second" style="font-size: larger"> *@
-@*         @if (SelectedGame != null) *@
-@*         { *@
-@*             <EditGame Refresh="StateHasChanged" SelectedGame="@SelectedGame"></EditGame> *@
-@*         } *@
-@* *@
-@*     </div> *@
-@* *@
-@* </div> *@
+
 
 @switch (Tournament.TournamentType)
 {

@@ -56,7 +56,7 @@
 @code{
 
     [Parameter]
-    public Action Refresh { get; set; }
+    public Func<Task> Refresh { get; set; }
 
     [Parameter]
     public Game SelectedGame { get; set; }
@@ -64,7 +64,7 @@
     private bool _editState = false;
 
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
         if (_editState)
         {
@@ -72,12 +72,12 @@
                 SelectedGame.PlayerOneScore > SelectedGame.PlayerTwoScore 
                     ? SelectedGame.PlayerOne 
                     : SelectedGame.PlayerTwo;
-            GameService.Edit(SelectedGame);
+            await GameService.Edit(SelectedGame);
         }
 
         _editState = !_editState;
         StateHasChanged();
-        Refresh.Invoke();
+        await Refresh.Invoke();
     }
 
 }

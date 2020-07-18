@@ -5,6 +5,7 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject OrganizerService OrganizerService
+@inject ChampionshipService ChampionshipService
 
 
 <AuthorizeView>
@@ -88,7 +89,7 @@
 
     private void SelectChampionship(Championship championship)
     {
-        SelectedChampionship = championship;
+        SelectedChampionship = championship != null ? ChampionshipService.GetWithAllIncludes(championship.ID) : null;
         StateHasChanged();
     }
 

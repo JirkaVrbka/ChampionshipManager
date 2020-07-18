@@ -33,7 +33,7 @@ namespace ChampionshipManager.Web
                     Configuration.GetConnectionString("DefaultConnection")));
             
             services.AddDbContext<ChampionshipManagerContext>(options =>
-                options.UseSqlite("Filename=./manager.db"), ServiceLifetime.Singleton);
+                options.UseSqlite("Filename=./manager.db"));
             
             services.AddDefaultIdentity<IdentityUser>(options =>
                 { // TODO
@@ -52,23 +52,23 @@ namespace ChampionshipManager.Web
                 .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>
                 >();
             
-            services.AddSingleton<OrganizerRepository>();
-            services.AddSingleton<CompetitorRepository>();
-            services.AddSingleton<SkillRepository>();
-            services.AddSingleton<ChampionshipRepository>();
-            services.AddSingleton<TournamentRepository>();
-            services.AddSingleton<GameRepository>();
-            services.AddSingleton<TeamRepository>();
+            services.AddScoped<OrganizerRepository>();
+            services.AddScoped<CompetitorRepository>();
+            services.AddScoped<SkillRepository>();
+            services.AddScoped<ChampionshipRepository>();
+            services.AddScoped<TournamentRepository>();
+            services.AddScoped<GameRepository>();
+            services.AddScoped<TeamRepository>();
 
-            services.AddSingleton<OrganizerService>();
-            services.AddSingleton<ChampionshipService>();
-            services.AddSingleton<SkillService>();
-            services.AddSingleton<CompetitorService>();
-            services.AddSingleton<TournamentService>();
-            services.AddSingleton<GameService>();
-            services.AddSingleton<TeamService>();
+            services.AddScoped<OrganizerService>();
+            services.AddScoped<ChampionshipService>();
+            services.AddScoped<SkillService>();
+            services.AddScoped<CompetitorService>();
+            services.AddScoped<TournamentService>();
+            services.AddScoped<GameService>();
+            services.AddScoped<TeamService>();
 
-            services.AddSingleton<TournamentFacade>();
+            services.AddScoped<TournamentFacade>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

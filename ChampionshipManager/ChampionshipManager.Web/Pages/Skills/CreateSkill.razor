@@ -33,9 +33,9 @@
         _skill.Organizer = OrganizerService.GetByName(organizerName);
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        SkillService.Create(_skill);
+         await SkillService.Create(_skill);
         var org = _skill.Organizer;
         _skill = new Skill();
         _skill.Organizer = org;

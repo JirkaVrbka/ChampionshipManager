@@ -115,22 +115,25 @@ else
 
     protected override void OnInitialized()
     {
-        Selected.AddRange(SelectedTournament.Competitors);
+        Selected.AddRange(TournamentService.GetCompetitors(SelectedTournament.ID));
         NoSelected.AddRange(ChampionshipService.GetCompetitors(ParentChampionship.ID));
         NoSelected.RemoveAll(x => Selected.Contains(x));
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
         if (_editState)
         {
             SelectedTournament.Competitors = Selected;
 
-            TournamentService.Edit(SelectedTournament);
+            await TournamentService.Edit(SelectedTournament);
+            
+            Selected = new List<Competitor>();
+            NoSelected = new List<Competitor>();
+            
         }
         
         _editState = !_editState;
-        StateHasChanged();
         Refresh.Invoke();
     }
 

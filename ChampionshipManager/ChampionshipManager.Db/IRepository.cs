@@ -6,10 +6,10 @@ namespace ChampionshipManager.Db
 {
     public interface IRepository<TEntity> where TEntity : IEntity
     {
-         Guid Create(TEntity entity);
-         void Delete(TEntity entity);
-         void Delete(Guid id);
-         void Edit(TEntity entity);
+        Task<Guid> Create(TEntity entity);
+         Task Delete(TEntity entity);
+         Task Delete(Guid id);
+         Task<TEntity> Edit(TEntity entity);
 
         //read side (could be in separate Readonly Generic Repository)
         TEntity GetById(Guid id);

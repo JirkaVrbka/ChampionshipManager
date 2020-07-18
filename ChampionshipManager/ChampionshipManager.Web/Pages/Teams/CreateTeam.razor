@@ -29,9 +29,9 @@
         _team.Organizer = OrganizerService.GetByName(organizerName);
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        TeamService.Create(_team);
+        await TeamService.Create(_team);
         
         var org = _team.Organizer;
         _team = new Team();

@@ -53,10 +53,10 @@
         AllTeams = OrganizerService.GetTeamsByName(organizerName);
     }
 
-    private void RemoveTeam(Team team)
+    private async Task RemoveTeam(Team team)
     {
         AllTeams.Remove(team);
-        TeamService.Delete(team);
+        await TeamService.Delete(team);
         StateHasChanged();
     }
 

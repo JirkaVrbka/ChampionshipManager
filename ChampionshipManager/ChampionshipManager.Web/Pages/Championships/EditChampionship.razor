@@ -87,14 +87,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Selected.Clear();
-        NoSelected.Clear();
         var organizerName = await AuthenticationStateProvider.GetUserName();
 
 
         Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
-        NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
-        NoSelected.RemoveAll(x => Selected.Contains(x));
+        NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName).Where(c => !Selected.Contains(c)));
     }
 
 
@@ -106,19 +103,20 @@
         {
             SelectedChampionship.Competitors = Selected;
 
-            ChampionshipService.Edit(SelectedChampionship);
+            await ChampionshipService.Edit(SelectedChampionship);
 
-            Selected.Clear();
-            NoSelected.Clear();
+            Selected = new List<Competitor>();
+            NoSelected = new List<Competitor>();
 
             var organizerName = await AuthenticationStateProvider.GetUserName();
 
 
+            // Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
+            // NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
+            // NoSelected.RemoveAll(x => Selected.Contains(x));
             Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
-            NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
-            NoSelected.RemoveAll(x => Selected.Contains(x));
-
-            StateHasChanged();
+            NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName).Where(c => !Selected.Contains(c)));
+            
             Refresh.Invoke();
         }
 
@@ -151,13 +149,13 @@
     private void SelectAll()
     {
         Selected.AddRange(NoSelected);
-        NoSelected.Clear();
+        NoSelected = new List<Competitor>();
     }
 
     private void DeselectAll()
     {
         NoSelected.AddRange(Selected);
-        Selected.Clear();
+        Selected = new List<Competitor>();
     }
 
 }

@@ -25,24 +25,24 @@ namespace ChampionshipManager.BusinessLayer.Services
             return Guid.TryParse(id, out var guid) ? GetById(guid) : null;
         }
 
-        public virtual Guid Create(TEntity entity)
+        public virtual async Task<Guid> Create(TEntity entity)
         {
-            return Repository.Create(entity);
+            return await Repository.Create(entity);
         }
 
-        public virtual void Delete(TEntity entity)
+        public virtual async Task Delete(TEntity entity)
         {
-            Repository.Delete(entity);
+            await Repository.Delete(entity);
         }
 
-        public virtual void Delete(Guid id)
+        public virtual async Task Delete(Guid id)
         {
-            Repository.Delete(id);
+            await Repository.Delete(id);
         }
 
-        public virtual void Edit(TEntity entity)
+        public virtual async Task<TEntity> Edit(TEntity entity)
         {
-            Repository.Edit(entity);
+            return await Repository.Edit(entity);
         }
 
         public virtual TEntity GetWithAllIncludes(Guid id)

@@ -44,10 +44,10 @@
         AllSkills = OrganizerService.GetSkillsByName(organizerName);
     }
     
-    private void RemoveSkill(Skill skill)
+    private async Task RemoveSkill(Skill skill)
     {
         AllSkills.Remove(skill);
-        SkillService.Delete(skill);
+        await SkillService.Delete(skill);
     }
     
     private void Refresh()

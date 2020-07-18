@@ -17,41 +17,43 @@ namespace ChampionshipManager.Db.Repository
         // public Repository(IContextProvider provider) => _provider = provider;
         public Repository(ChampionshipManagerContext context) => Context = context;
 
-        public Guid Create(TEntity entity)
+        public async Task<Guid> Create(TEntity entity)
         {
             var createdEntity = Context.Set<TEntity>().Add(entity);
-            SaveChanges();
+            await SaveChangesAsync();
             return createdEntity.Entity.ID;
         }
 
-        public void Delete(TEntity entity)
+        public async Task Delete(TEntity entity)
         {
             Context.Set<TEntity>().Remove(entity);
-            SaveChanges();
+            await SaveChangesAsync();
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Guid id)
         {
             var entityToDelete = Context.Set<TEntity>().FirstOrDefault(e => e.ID == id);
             if (entityToDelete != null)
             {
                 Context.Set<TEntity>().Remove(entityToDelete);
-                SaveChanges();
+                await SaveChangesAsync();
             }
         }
 
-        public void Edit(TEntity entity)
+        public async  Task<TEntity> Edit(TEntity entity)
         {
             var editedEntity = Context.Set<TEntity>().FirstOrDefault(e => e.ID == entity.ID);
             editedEntity = entity;
-            SaveChanges();
+            await SaveChangesAsync();
+            return editedEntity;
         }
 
-        public void EditAsync(TEntity entity)
+        public async Task<TEntity> EditAsync(TEntity entity)
         {
             var editedEntity = Context.Set<TEntity>().FirstOrDefault(e => e.ID == entity.ID);
             editedEntity = entity;
-            SaveChanges();
+            await SaveChangesAsync();
+            return editedEntity;
         }
 
         public TEntity GetById(Guid id)
@@ -90,6 +92,6 @@ namespace ChampionshipManager.Db.Repository
         }
 
         //public void SaveChanges() => Context.SaveChanges();
-        public void SaveChanges() => Context.SaveChanges();
+        public async Task SaveChangesAsync() => await Context.SaveChangesAsync();
     }
 }

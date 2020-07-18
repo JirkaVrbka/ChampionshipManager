@@ -25,14 +25,14 @@
                 TeamsEnabled = true
             };
 
-            var organizerId = OrganizerService.Create(organizer);
+            var organizerId = await OrganizerService.Create(organizer);
             organizer = OrganizerService.GetById(organizerId);
 
             var defaultSkill = new Skill{ Name = "None", Order = 0, Organizer = organizer};
             var defaultTeam = new Team{ Name = "None", Organizer = organizer};
 
-            SkillService.Create(defaultSkill);
-            TeamService.Create(defaultTeam);
+            await SkillService.Create(defaultSkill);
+            await TeamService.Create(defaultTeam);
         }
     }
 }

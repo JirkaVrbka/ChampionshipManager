@@ -107,7 +107,7 @@
         _competitor.Skill = OrganizerService.GetSkillByNameOrDefault(organizerName, _skillId);
         _competitor.Team = OrganizerService.GetTeamByNameOrDefault(organizerName, _teamId);
 
-        CompetitorService.Create(_competitor);
+        await CompetitorService.Create(_competitor);
         SetUpNewCompetitor();
         Refresh.Invoke();
     }

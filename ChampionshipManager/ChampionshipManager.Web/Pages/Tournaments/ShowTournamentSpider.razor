@@ -91,15 +91,15 @@
 
     private Game SelectedGame = null;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         Games = GameService.GetByTournamentIdWithIncludes(TournamentId);
-        TournamentService.ProcessSpiderGamesAndEdit(TournamentId);
+        await TournamentService.ProcessSpiderGamesAndEdit(TournamentId);
     }
 
-    private void UpdatedGame()
+    private async Task UpdatedGame()
     {
-        TournamentService.ProcessSpiderGamesAndEdit(TournamentId);
+        await TournamentService.ProcessSpiderGamesAndEdit(TournamentId);
         StateHasChanged();
     }
 

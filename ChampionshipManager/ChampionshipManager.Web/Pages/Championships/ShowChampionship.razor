@@ -7,6 +7,7 @@
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ChampionshipService ChampionshipService
+@inject TournamentService TournamentService
 
 
 <AuthorizeView>
@@ -98,7 +99,7 @@
     
     private void SelectTournament(Tournament tournament)
     {
-        SelectedTournament = tournament;
+        SelectedTournament = tournament != null ? TournamentService.GetWithAllIncludes(tournament.ID) : null;
         StateHasChanged();
     }
 

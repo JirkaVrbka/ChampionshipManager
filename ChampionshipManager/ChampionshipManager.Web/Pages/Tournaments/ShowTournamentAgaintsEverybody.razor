@@ -51,7 +51,7 @@
     <div class="responsiveColumn second" style="font-size: larger">
         @if (SelectedGame != null)
         {
-            <EditGame Refresh="StateHasChanged" SelectedGame="@SelectedGame"></EditGame>
+            <EditGame Refresh="StateHasChangedAsync" SelectedGame="@SelectedGame"></EditGame>
         }
 
     </div>
@@ -77,6 +77,11 @@
     private void SelectGame(Game game)
     {
         SelectedGame = game;
+        StateHasChanged();
+    }
+
+    private async Task StateHasChangedAsync()
+    {
         StateHasChanged();
     }
 
