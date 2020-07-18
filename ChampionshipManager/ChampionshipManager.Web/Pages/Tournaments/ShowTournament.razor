@@ -79,7 +79,7 @@
     private Tournament Tournament;
 
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         Tournament = TournamentService.GetById(TournamentId);
     }

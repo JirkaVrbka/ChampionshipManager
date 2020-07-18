@@ -193,8 +193,8 @@ app {
 }
 
 .responsiveColumn.second{
-    background-image: linear-gradient(90deg, #FFFFFF 0%,#ADD8E6 20%);
-    padding-left: 100px;
+    background-image: linear-gradient(90deg, #FFFFFF 0%,#ADD8E6 150px);
+    padding-left: 150px;
 }
 
 /* Clear floats after the columns */

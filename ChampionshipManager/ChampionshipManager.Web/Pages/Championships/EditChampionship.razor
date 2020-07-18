@@ -100,7 +100,9 @@
 
     private async Task HandleValidSubmit()
     {
-        if (_editState)
+        
+        _editState = !_editState;
+        if (!_editState)
         {
             SelectedChampionship.Competitors = Selected;
 
@@ -120,7 +122,6 @@
             Refresh.Invoke();
         }
 
-        _editState = !_editState;
     }
 
     private void ChangeFinishState()

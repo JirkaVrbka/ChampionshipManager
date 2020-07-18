@@ -105,12 +105,19 @@ else
     private bool _editState = false;
 
 
-    protected override async Task OnInitializedAsync()
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     Selected.AddRange(SelectedTournament.Competitors);
+    //     NoSelected.AddRange(ChampionshipService.GetCompetitors(ParentChampionship.ID));
+    //     NoSelected.RemoveAll(x => Selected.Contains(x));
+    //
+    // }
+
+    protected override void OnInitialized()
     {
         Selected.AddRange(SelectedTournament.Competitors);
         NoSelected.AddRange(ChampionshipService.GetCompetitors(ParentChampionship.ID));
         NoSelected.RemoveAll(x => Selected.Contains(x));
-
     }
 
     private void HandleValidSubmit()

@@ -1,4 +1,3 @@
-
 @using ChampionshipManager.Db.Models
 @using ChampionshipManager.BusinessLayer.Services
 
@@ -21,14 +20,14 @@
                 <span style="padding-left: 10px">@place</span>
             }
             <br/>
-            
+
             <h4>2nd place</h4>
             foreach (var place in secondPlace)
             {
                 <span style="padding-left: 10px">@place</span>
             }
             <br/>
-            
+
             <h4>3rd place</h4>
             foreach (var place in thirdPlace)
             {
@@ -38,7 +37,7 @@
         }
         <br/>
         <br/>
-        
+
         <h3>Matches</h3>
         @{
             int round = 0;
@@ -53,7 +52,9 @@
                         <br/>
                         @if (game.PlayerOneScore != 0 || game.PlayerTwoScore != 0)
                         {
-                            <span>@game.PlayerOneScore</span> <span>:</span> <span> @game.PlayerTwoScore </span>
+                            <span>@game.PlayerOneScore</span>
+                            <span>:</span>
+                            <span> @game.PlayerTwoScore </span>
                         }
                         else
                         {
@@ -61,13 +62,13 @@
                         }
                     </button>
                 }
-                
-                
+
+
                 round++;
             }
         }
-        
-        
+
+
     </div>
 
     <div class="responsiveColumn second" style="font-size: larger">
@@ -90,7 +91,7 @@
 
     private Game SelectedGame = null;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         Games = GameService.GetByTournamentIdWithIncludes(TournamentId);
         TournamentService.ProcessSpiderGamesAndEdit(TournamentId);
@@ -99,7 +100,7 @@
     private void UpdatedGame()
     {
         TournamentService.ProcessSpiderGamesAndEdit(TournamentId);
-        StateHasChanged();       
+        StateHasChanged();
     }
 
     private void SelectGame(Game game)
@@ -113,26 +114,26 @@
         var result = new Tuple<List<string>, List<string>, List<string>>(new List<string>(), new List<string>(), new List<string>());
         var counted = Games
             .GroupBy(
-                g => g.Winner, 
-                g => 1, 
+                g => g.Winner,
+                g => 1,
                 (_winner, _winCount) => new {winner = _winner, winCount = _winCount.Sum()}
-        ).ToList();
+            ).ToList();
 
         counted.RemoveAll(w => w.winner == null);
-        
+
         var firstPlace = counted.Where(r => r.winCount == counted.Max(w => w.winCount)).ToList();
         result.Item1.AddRange(firstPlace.Select(w => w.winner?.Name ?? ""));
         counted.RemoveAll(i => firstPlace.Contains(i));
-        
+
         var secondPlace = counted.Where(r => r.winCount == counted.Max(w => w.winCount)).ToList();
         result.Item2.AddRange(secondPlace.Select(w => w.winner?.Name ?? ""));
         counted.RemoveAll(i => secondPlace.Contains(i));
-        
+
         var thirdPlace = counted.Where(r => r.winCount == counted.Max(w => w.winCount)).ToList();
         result.Item3.AddRange(thirdPlace.Select(w => w.winner?.Name ?? ""));
         counted.RemoveAll(i => thirdPlace.Contains(i));
 
         return result;
     }
-    
+
 }

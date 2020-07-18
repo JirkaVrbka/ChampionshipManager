@@ -68,7 +68,7 @@
 
     private Game SelectedGame = null;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         Games = GameService
             .GetByTournamentIdWithIncludes(TournamentId);
