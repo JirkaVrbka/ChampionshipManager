@@ -36,7 +36,7 @@ namespace ChampionshipManager.Web
 
             services.AddDefaultIdentity<IdentityUser>(options =>
                 {
-                    // TODO
+                    // Lowered security for demonstration
                     options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
