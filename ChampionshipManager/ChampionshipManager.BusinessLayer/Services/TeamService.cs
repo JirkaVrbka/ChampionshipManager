@@ -8,6 +8,5 @@ namespace ChampionshipManager.BusinessLayer.Services
         public TeamService(TeamRepository repository) : base(repository)
         {
         }
-        
     }
 }

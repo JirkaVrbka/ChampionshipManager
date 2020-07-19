@@ -20,8 +20,10 @@ else
 {
     <button class="oi oi-minus" aria-hidden="true" style="height: 30px" @onclick="@(OnRemove)"></button>
     <button class="oi oi-pencil" aria-hidden="true" style="height: 30px" @onclick="@(OnEditClick)"></button>
-    @Skill.Name <span>(@Skill.Order)</span>
+    @Skill.Name
+    <span>(@Skill.Order)</span>
 }
+
 @code
 {
     [Parameter]

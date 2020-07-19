@@ -12,11 +12,11 @@ namespace ChampionshipManager.Db.Repository
         // protected ASpecificEntityRepository(IContextProvider provider) : base(provider)
         // {
         // }
-        
+
         protected ASpecificEntityRepository(ChampionshipManagerContext context) : base(context)
         {
         }
-        
+
         public IEnumerable<TEntity> FilterWithIncludes()
         {
             return base.Filter(Includes);

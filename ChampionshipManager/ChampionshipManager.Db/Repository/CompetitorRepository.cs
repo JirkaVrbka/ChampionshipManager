@@ -8,7 +8,7 @@ namespace ChampionshipManager.Db.Repository
     {
         public override List<string> Includes { get; } = new List<string>
         {
-            nameof(Competitor.Skill), 
+            nameof(Competitor.Skill),
             nameof(Competitor.Organizer),
             nameof(Competitor.Team)
         };

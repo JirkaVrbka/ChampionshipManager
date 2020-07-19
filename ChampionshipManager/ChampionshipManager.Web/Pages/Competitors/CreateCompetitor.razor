@@ -39,9 +39,9 @@
                 <button class="oi oi-check" type="submit" style="width: 250px">
                     <span style="padding-left: 10px">Add</span>
                 </button>
-                </div>
+            </div>
             <br/>
-            
+
             <InputText id="name" @bind-Value="_competitor.Name" placeholder="Name" style="width: 250px"/>
             @if (_organizer.BirthEnabled)
             {
@@ -76,7 +76,7 @@
             }
 
             <br/>
-            
+
         </div>
     </div>
 </EditForm>
@@ -118,7 +118,7 @@
         {
             Organizer = _organizer,
             Gender = Gender.Unknown,
-        BirthDate = DateTime.Today
+            BirthDate = DateTime.Today
         };
     }
 

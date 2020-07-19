@@ -9,7 +9,7 @@ namespace ChampionshipManager.Db.Models
 
         public Competitor PlayerOne { get; set; }
         public int PlayerOneScore { get; set; }
-        
+
         public Competitor PlayerTwo { get; set; }
         public int PlayerTwoScore { get; set; }
 

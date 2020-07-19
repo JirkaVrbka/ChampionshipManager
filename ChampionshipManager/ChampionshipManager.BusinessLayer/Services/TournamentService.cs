@@ -41,7 +41,7 @@ namespace ChampionshipManager.BusinessLayer.Services
         {
             var originalCompetitors = GetCompetitors(entity.ID);
 
-            var gamesId = GetGames(entity.ID).Select(g => new { g.ID }).ToList();
+            var gamesId = GetGames(entity.ID).Select(g => new {g.ID}).ToList();
             foreach (var game in gamesId)
             {
                 await _gameRepository.Delete(game.ID);

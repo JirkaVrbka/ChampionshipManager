@@ -9,13 +9,12 @@ namespace ChampionshipManager.Db.Models
     {
         public Guid ID { set; get; }
 
-        [Required]
-        public string Name { get; set; }
+        [Required] public string Name { get; set; }
         public bool SkillsEnabled { get; set; }
         public bool TeamsEnabled { get; set; }
         public bool GenderEnabled { get; set; }
         public bool BirthEnabled { get; set; }
-        
+
         public List<Skill> Skills { get; set; }
         public List<Competitor> Competitors { get; set; }
         public List<Championship> Championships { get; set; }

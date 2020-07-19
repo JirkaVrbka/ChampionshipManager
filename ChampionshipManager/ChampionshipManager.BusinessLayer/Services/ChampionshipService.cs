@@ -11,16 +11,16 @@ namespace ChampionshipManager.BusinessLayer.Services
         public ChampionshipService(ChampionshipRepository repository) : base(repository)
         {
         }
-        
+
         public Championship GetWithCompetitors(Guid championshipId)
         {
-            return GetWithIncludes(championshipId, new List<string>{nameof(Championship.Competitors)});
+            return GetWithIncludes(championshipId, new List<string> {nameof(Championship.Competitors)});
         }
-        
+
         public Championship GetWithCompetitors(string championshipId)
         {
-            return Guid.TryParse(championshipId, out var championshipGuid) 
-                ? GetWithCompetitors(championshipGuid) 
+            return Guid.TryParse(championshipId, out var championshipGuid)
+                ? GetWithCompetitors(championshipGuid)
                 : null;
         }
 
@@ -28,17 +28,15 @@ namespace ChampionshipManager.BusinessLayer.Services
         {
             return GetWithCompetitors(championshipId).Competitors;
         }
-        
+
         public List<Competitor> GetCompetitors(Guid championshipId)
         {
-            return GetWithIncludes(championshipId, new List<string>{nameof(Championship.Competitors)}).Competitors;
-        }
-        
-        private Championship GetWithIncludes(Guid championshipId, List<string> includes = null)
-        {
-                return Repository.Filter(c => c.ID == championshipId, includes).Single();
-            
+            return GetWithIncludes(championshipId, new List<string> {nameof(Championship.Competitors)}).Competitors;
         }
 
+        private Championship GetWithIncludes(Guid championshipId, List<string> includes = null)
+        {
+            return Repository.Filter(c => c.ID == championshipId, includes).Single();
+        }
     }
 }

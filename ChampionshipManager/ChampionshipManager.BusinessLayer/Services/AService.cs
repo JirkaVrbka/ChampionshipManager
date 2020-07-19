@@ -42,8 +42,6 @@ namespace ChampionshipManager.BusinessLayer.Services
 
         public virtual async Task<TEntity> Edit(TEntity entity)
         {
-            
-            
             return await Repository.Edit(entity);
         }
 

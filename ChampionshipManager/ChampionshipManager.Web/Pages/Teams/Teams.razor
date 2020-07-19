@@ -13,28 +13,27 @@
     <Authorized>
         <br/>
         <br/>
-        <div style="font-size: larger">Teams:</div> 
+        <div style="font-size: larger">Teams:</div>
         <div>
             <ul class="nav flex-column">
                 <li class="nav-item px-3">
-                    <div class="nav-link active" >
+                    <div class="nav-link active">
                         <CreateTeam Refresh="@Refresh"/>
                     </div>
                 </li>
                 @foreach (var team in AllTeams)
-                        {
-                            <li class="nav-item px-3">
-                                <div class="nav-link">
-                                    
-                                    <EditTeam Team="@team" OnRemove="@(() => RemoveTeam(team))"></EditTeam>
-                                    
-                                </div>
-                            </li>
-                            
-                        }
+                {
+                    <li class="nav-item px-3">
+                        <div class="nav-link">
+
+                            <EditTeam Team="@team" OnRemove="@(() => RemoveTeam(team))"></EditTeam>
+
+                        </div>
+                    </li>
+                }
             </ul>
         </div>
-        
+
     </Authorized>
 
 

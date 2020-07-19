@@ -19,67 +19,67 @@ else
         <DataAnnotationsValidator/>
         <ValidationSummary/>
 
-    <div class="row">
-        
-        <div class="responsiveColumn" style="font-size: larger">
-            
-            <button @onclick="@(ChangeFinishState)" style="width: 250px" disabled="@(!_editState)">@(SelectedTournament.IsFinished ? "Unfinish" : "Finish")</button>
-            <div style="font-size: x-large">Details:</div>
-            <br/>
-            <div>Name</div>
-            <br/>
-            <div>Type</div>
-            <br/>
-            <div>Selected</div>
-            <br/>
-            <div class="multiple-selector-buttons">
-                <button type="button" @onclick="DeselectAll" disabled="@(!_editState)">@removeAllText</button>
+        <div class="row">
+
+            <div class="responsiveColumn" style="font-size: larger">
+
+                <button @onclick="@(ChangeFinishState)" style="width: 250px" disabled="@(!_editState)">@(SelectedTournament.IsFinished ? "Unfinish" : "Finish")</button>
+                <div style="font-size: x-large">Details:</div>
+                <br/>
+                <div>Name</div>
+                <br/>
+                <div>Type</div>
+                <br/>
+                <div>Selected</div>
+                <br/>
+                <div class="multiple-selector-buttons">
+                    <button type="button" @onclick="DeselectAll" disabled="@(!_editState)">@removeAllText</button>
+                </div>
+                <ul>
+                    @foreach (var item in Selected)
+                    {
+                        <li @onclick="@(() => Deselect(item))">@item.Name</li>
+                    }
+                </ul>
+
             </div>
-            <ul>
-                @foreach (var item in Selected)
-                {
-                    <li @onclick="@(() => Deselect(item))">@item.Name</li>
-                }
-            </ul>
-            
+            <div class="responsiveColumn" style="font-size: larger">
+
+                <div style="font-size: x-large">
+                    <button class="oi oi-check" type="submit" style="width: 250px">
+                        <span style="padding-left: 10px">@(_editState ? "Save" : "Update")</span>
+                    </button>
+                </div>
+                <br/>
+                <br/>
+
+                <InputText id="name" @bind-Value="SelectedTournament.Name" placeholder="Name" style="width: 250px" disabled="@(!_editState)"/>
+
+
+                <br/>
+                <br/>
+                <InputSelect id="tournamentType" @bind-Value="SelectedTournament.TournamentType" style="width: 250px" disabled="@(!_editState)">
+                    @foreach (var item in Enum.GetNames(typeof(TournamentType)))
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </InputSelect>
+                <br/>
+                <div>Unselected</div>
+                <br/>
+                <div class="multiple-selector-buttons">
+                    <button type="button" @onclick="SelectAll" disabled="@(!_editState)">@addAllText</button>
+                </div>
+                <ul>
+                    @foreach (var item in NoSelected)
+                    {
+                        <li @onclick="@(() => Select(item))">@item.Name</li>
+                    }
+                </ul>
+
+            </div>
         </div>
-        <div class="responsiveColumn" style="font-size: larger">
 
-            <div style="font-size: x-large">
-                <button class="oi oi-check" type="submit" style="width: 250px">
-                    <span style="padding-left: 10px">@(_editState ? "Save" : "Update")</span>
-                </button>
-            </div>
-            <br/>
-            <br/>
-
-            <InputText id="name" @bind-Value="SelectedTournament.Name" placeholder="Name" style="width: 250px" disabled="@(!_editState)"/>
-
-
-            <br/>
-            <br/>
-            <InputSelect id="tournamentType" @bind-Value="SelectedTournament.TournamentType" style="width: 250px" disabled="@(!_editState)">
-                @foreach (var item in Enum.GetNames(typeof(TournamentType)))
-                {
-                    <option value="@item">@item</option>
-                }
-            </InputSelect>
-            <br/>
-            <div>Unselected</div>
-            <br/>
-            <div class="multiple-selector-buttons">
-                <button type="button" @onclick="SelectAll" disabled="@(!_editState)">@addAllText</button>
-            </div>
-            <ul>
-                @foreach (var item in NoSelected)
-                {
-                    <li @onclick="@(() => Select(item))">@item.Name</li>
-                }
-            </ul>
-
-        </div>
-    </div>
-    
     </EditForm>
 }
 
@@ -101,9 +101,9 @@ else
 
     private string removeAllText = ">>";
     private string addAllText = "<<";
-    
+
     private bool _editState = false;
-    
+
 
     protected override void OnInitialized()
     {
@@ -129,9 +129,8 @@ else
             {
                 await TournamentService.Edit(SelectedTournament);
             }
-
         }
-        
+
         _editState = !_editState;
         Refresh.Invoke();
     }
@@ -140,13 +139,12 @@ else
     {
         SelectedTournament.IsFinished = !SelectedTournament.IsFinished;
     }
-    
+
 
     private void Select(Competitor item)
     {
         if (_editState)
         {
-
             NoSelected.Remove(item);
             Selected.Add(item);
         }

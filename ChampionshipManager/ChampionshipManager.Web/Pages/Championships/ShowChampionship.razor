@@ -15,17 +15,19 @@
 
         <div class="row">
             <span class="responsiveColumn">
-                <h2>@CurrentChampionship.Name <span>(Championship)</span></h2>
+                <h2>
+                    @CurrentChampionship.Name <span>(Championship)</span>
+                </h2>
 
                 <p>Championship to host tournaments</p>
                 <br/>
                 <div style="font-size: large">
-                            <a href="/Championships">
-                            <button class="oi oi-arrow-left" style="font-size: large;width: 250px">
-                                <span style="padding-left: 10px">Back</span>
-                            </button>
-                            </a>
-                        </div>
+                    <a href="/Championships">
+                        <button class="oi oi-arrow-left" style="font-size: large;width: 250px">
+                            <span style="padding-left: 10px">Back</span>
+                        </button>
+                    </a>
+                </div>
                 <div style="font-size: large">
                     <button class="oi oi-plus" style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(null))">
                         <span style="padding-left: 10px">Add new tournament</span>
@@ -37,19 +39,19 @@
                 @foreach (var tournament in CurrentChampionship.Tournaments.Where(c => !c.IsFinished))
                 {
                     <div>
-                    <button style="font-size: large;width: 250px;" @onclick="@(() => SelectTournament(tournament))">
-                        <br/>
-                        @tournament.Name
-                        <br/>
-                    </button>
-                <a href="/Tournament/@CurrentChampionship.ID/@tournament.ID">
-                    <button style="font-size: large;width: 50px">
-                        <br/>
-                        >>
-                        <br/>
-                    </button>
-                </a>
-                </div>
+                        <button style="font-size: large;width: 250px;" @onclick="@(() => SelectTournament(tournament))">
+                            <br/>
+                            @tournament.Name
+                            <br/>
+                        </button>
+                        <a href="/Tournament/@CurrentChampionship.ID/@tournament.ID">
+                            <button style="font-size: large;width: 50px">
+                                <br/>
+                                >>
+                                <br/>
+                            </button>
+                        </a>
+                    </div>
                 }
 
                 <br/>
@@ -58,13 +60,12 @@
                 @foreach (var tournament in CurrentChampionship.Tournaments.Where(c => c.IsFinished))
                 {
                     <div>
-                <button style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(tournament))">
-                    <br/>
-                    @tournament.Name
-                    <br/>
-                </button>
-                </div>
-                    
+                        <button style="font-size: large;width: 250px" @onclick="@(() => SelectTournament(tournament))">
+                            <br/>
+                            @tournament.Name
+                            <br/>
+                        </button>
+                    </div>
                 }
 
             </span>
@@ -76,7 +77,6 @@
                 else
                 {
                     <EditTournament Refresh="@StateHasChanged" SelectedTournament="@SelectedTournament" ParentChampionship="@CurrentChampionship"></EditTournament>
-                    
                 }
             </span>
         </div>
@@ -91,19 +91,20 @@
 
 
 @code{
+
     [Parameter]
     public string Id { get; set; }
 
     private Tournament SelectedTournament = null;
-    
+
     private Championship CurrentChampionship { get; set; }
 
-    
+
     protected override void OnInitialized()
     {
         CurrentChampionship = ChampionshipService.GetWithAllIncludes(Id);
     }
-    
+
     private void SelectTournament(Tournament tournament)
     {
         SelectedTournament = tournament != null ? TournamentService.GetWithAllIncludes(tournament.ID) : null;

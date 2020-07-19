@@ -68,9 +68,9 @@
     {
         if (_editState)
         {
-            SelectedGame.Winner = 
-                SelectedGame.PlayerOneScore > SelectedGame.PlayerTwoScore 
-                    ? SelectedGame.PlayerOne 
+            SelectedGame.Winner =
+                SelectedGame.PlayerOneScore > SelectedGame.PlayerTwoScore
+                    ? SelectedGame.PlayerOne
                     : SelectedGame.PlayerTwo;
             await GameService.Edit(SelectedGame);
         }

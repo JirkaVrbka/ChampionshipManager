@@ -22,7 +22,7 @@
     public Action Refresh { get; set; }
 
     private Team _team = new Team();
-    
+
     protected override async Task OnInitializedAsync()
     {
         var organizerName = await AuthenticationStateProvider.GetUserName();
@@ -32,7 +32,7 @@
     private async Task HandleValidSubmit()
     {
         await TeamService.Create(_team);
-        
+
         var org = _team.Organizer;
         _team = new Team();
         _team.Organizer = org;

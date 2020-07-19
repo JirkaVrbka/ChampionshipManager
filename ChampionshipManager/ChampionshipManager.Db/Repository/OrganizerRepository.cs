@@ -10,12 +10,12 @@ namespace ChampionshipManager.Db.Repository
     {
         public override List<string> Includes { get; } = new List<string>
         {
-            nameof(Organizer.Skills), 
-            nameof(Organizer.Competitors), 
+            nameof(Organizer.Skills),
+            nameof(Organizer.Competitors),
             nameof(Organizer.Championships),
             nameof(Organizer.Teams)
         };
-        
+
         // public OrganizerRepository(IContextProvider provider) : base(provider)
         // {
         //     // if (!context.Organizers.Any())

@@ -19,7 +19,7 @@ namespace ChampionshipManager.Db.Context
             //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
-        
+
         // protected override void OnModelCreating(ModelBuilder modelBuilder)
         // {
         //     // modelBuilder.Entity<Organizer>()

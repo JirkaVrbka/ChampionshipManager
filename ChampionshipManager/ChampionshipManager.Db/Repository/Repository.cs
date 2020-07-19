@@ -10,7 +10,7 @@ namespace ChampionshipManager.Db.Repository
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity
     {
-        protected readonly ChampionshipManagerContext Context;// => _provider.GetUnitOfWorkInstance();
+        protected readonly ChampionshipManagerContext Context; // => _provider.GetUnitOfWorkInstance();
 
         // private readonly IContextProvider _provider;
         //
@@ -40,7 +40,7 @@ namespace ChampionshipManager.Db.Repository
             }
         }
 
-        public async  Task<TEntity> Edit(TEntity entity)
+        public async Task<TEntity> Edit(TEntity entity)
         {
             var editedEntity = Context.Set<TEntity>().FirstOrDefault(e => e.ID == entity.ID);
             editedEntity = entity;

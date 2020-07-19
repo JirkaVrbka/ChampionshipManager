@@ -10,28 +10,27 @@
 @namespace ChampionshipManager.Web.Pages.Skills
 
 <br/>
-        <br/>
-        <div style="font-size: larger">Skills:</div> 
-        <div>
-            <ul class="nav flex-column">
-                <li class="nav-item px-3">
-                    <div class="nav-link active" >
-                        <CreateSkill Refresh="@Refresh"/>
-                    </div>
-                </li>
-                @foreach (var skill in AllSkills)
-                        {
-                            <li class="nav-item px-3">
-                                <div class="nav-link">
-                                    
-                                    <EditSkill Skill="@skill" OnRemove="@(() => RemoveSkill(skill))"></EditSkill>
-                                    
-                                </div>
-                            </li>
-                            
-                        }
-            </ul>
-        </div>
+<br/>
+<div style="font-size: larger">Skills:</div>
+<div>
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <div class="nav-link active">
+                <CreateSkill Refresh="@Refresh"/>
+            </div>
+        </li>
+        @foreach (var skill in AllSkills)
+        {
+            <li class="nav-item px-3">
+                <div class="nav-link">
+
+                    <EditSkill Skill="@skill" OnRemove="@(() => RemoveSkill(skill))"></EditSkill>
+
+                </div>
+            </li>
+        }
+    </ul>
+</div>
 
 
 @code
@@ -43,13 +42,13 @@
         var organizerName = await AuthenticationStateProvider.GetUserName();
         AllSkills = OrganizerService.GetSkillsByName(organizerName);
     }
-    
+
     private async Task RemoveSkill(Skill skill)
     {
         AllSkills.Remove(skill);
         await SkillService.Delete(skill);
     }
-    
+
     private void Refresh()
     {
         StateHasChanged();

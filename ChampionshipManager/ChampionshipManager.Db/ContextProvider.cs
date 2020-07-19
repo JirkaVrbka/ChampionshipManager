@@ -10,10 +10,7 @@ namespace ChampionshipManager.Db
     public class ContextProvider : IContextProvider
     {
         public static readonly ILoggerFactory DbCommandConsoleLoggerFactory
-            = LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-            });
+            = LoggerFactory.Create(builder => { builder.AddConsole(); });
 
         protected static ChampionshipManagerContext UowLocalInstance = null;
 
@@ -26,7 +23,7 @@ namespace ChampionshipManager.Db
             optionBuilder.UseSqlite("Filename=./manager.db");
             optionBuilder.UseLoggerFactory(DbCommandConsoleLoggerFactory);
             optionBuilder.EnableSensitiveDataLogging();
-            
+
             UowLocalInstance = new ChampionshipManagerContext(
                 optionBuilder.Options
             );
@@ -39,7 +36,9 @@ namespace ChampionshipManager.Db
         /// </summary>
         public ChampionshipManagerContext GetUnitOfWorkInstance()
         {
-            return UowLocalInstance != null ? UowLocalInstance : throw new InvalidOperationException("Context not created");
+            return UowLocalInstance != null
+                ? UowLocalInstance
+                : throw new InvalidOperationException("Context not created");
         }
 
         public void Dispose()

@@ -4,7 +4,7 @@ using ChampionshipManager.Db.Repository;
 
 namespace ChampionshipManager.BusinessLayer.Services
 {
-    public class CompetitorService: AService<Competitor>
+    public class CompetitorService : AService<Competitor>
     {
         public CompetitorService(CompetitorRepository repository) : base(repository)
         {

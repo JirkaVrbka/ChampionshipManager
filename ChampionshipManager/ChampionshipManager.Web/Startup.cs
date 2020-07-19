@@ -31,12 +31,13 @@ namespace ChampionshipManager.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
-            
+
             services.AddDbContext<ChampionshipManagerContext>(options =>
                 options.UseSqlite("Filename=./manager.db"));
-            
+
             services.AddDefaultIdentity<IdentityUser>(options =>
-                { // TODO
+                {
+                    // TODO
                     options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireDigit = false;
@@ -51,7 +52,7 @@ namespace ChampionshipManager.Web
             services
                 .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>
                 >();
-            
+
             services.AddScoped<OrganizerRepository>();
             services.AddScoped<CompetitorRepository>();
             services.AddScoped<SkillRepository>();

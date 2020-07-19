@@ -12,7 +12,7 @@ namespace ChampionshipManager.Db.Repository
         // public ChampionshipRepository(IContextProvider provider) : base(provider)
         // {
         // }
-        
+
         public ChampionshipRepository(ChampionshipManagerContext context) : base(context)
         {
         }
