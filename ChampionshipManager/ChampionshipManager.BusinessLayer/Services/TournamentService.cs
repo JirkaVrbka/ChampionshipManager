@@ -9,13 +9,17 @@ namespace ChampionshipManager.BusinessLayer.Services
 {
     public class TournamentService : AService<Tournament>
     {
-        public TournamentService(TournamentRepository repository) : base(repository)
+        private GameRepository _gameRepository;
+
+        public TournamentService(TournamentRepository repository, GameRepository gameRepository) : base(repository)
         {
+            _gameRepository = gameRepository;
         }
 
         public List<Competitor> GetCompetitors(Guid id)
         {
-            return Repository.Filter(t => t.ID == id, new List<string> {nameof(Tournament.Competitors)}).Single().Competitors;
+            return Repository.Filter(t => t.ID == id, new List<string> {nameof(Tournament.Competitors)}).Single()
+                .Competitors;
         }
 
         public override async Task<Guid> Create(Tournament entity)
@@ -33,14 +37,39 @@ namespace ChampionshipManager.BusinessLayer.Services
             return await base.Create(entity);
         }
 
+        public async Task<Tournament> EditChangedCompetitors(Tournament entity)
+        {
+            var originalCompetitors = GetCompetitors(entity.ID);
+
+            var gamesId = GetGames(entity.ID).Select(g => new { g.ID }).ToList();
+            foreach (var game in gamesId)
+            {
+                await _gameRepository.Delete(game.ID);
+            }
+
+            switch (entity.TournamentType)
+            {
+                case TournamentType.AgainstEverybody:
+                    entity.Games = CreateAgainstEverybodyGames(entity);
+                    break;
+                case TournamentType.Spider:
+                    entity.Games = CreateSpiderGames(entity);
+                    break;
+            }
+
+
+            return await base.Edit(entity);
+        }
+
+
         private List<Game> CreateAgainstEverybodyGames(Tournament tournament)
         {
             List<Game> games = new List<Game>();
             var competitors = tournament.Competitors;
- 
+
             for (int i = 0; i < competitors.Count; i++)
             {
-                for (int j = i+1; j < competitors.Count; j++)
+                for (int j = i + 1; j < competitors.Count; j++)
                 {
                     games.Add(new Game
                     {
@@ -64,21 +93,23 @@ namespace ChampionshipManager.BusinessLayer.Services
             }
         }
 
-        public Tournament ProcessSpiderGames(Tournament tournament)
+        private Tournament ProcessSpiderGames(Tournament tournament)
         {
             //Default winners
-            foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne == null && g.PlayerTwo != null))
+            foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne == null && g.PlayerTwo != null)
+            )
             {
                 game.Winner = game.PlayerTwo;
                 game.PlayerTwoScore = 1;
             }
-            
-            foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne != null && g.PlayerTwo == null))
+
+            foreach (var game in tournament.Games.Where(g => g.Round == 0 && g.PlayerOne != null && g.PlayerTwo == null)
+            )
             {
                 game.Winner = game.PlayerOne;
                 game.PlayerOneScore = 1;
             }
-            
+
             var tiers = tournament.Games.GroupBy(
                 g => g.Round,
                 g => g,
@@ -87,16 +118,16 @@ namespace ChampionshipManager.BusinessLayer.Services
             for (int i = 0; i < tiers.Count - 1; i++)
             {
                 var tierI = tournament.Games.Where(g => g.Round == i).ToList();
-                
+
                 var tierIPlusOne = tournament.Games.Where(g => g.Round == i + 1).ToList();
-                var tierIPlusOnePlayers = tierIPlusOne.FindAll(g => g.PlayerOne != null).Select(g => g.PlayerOne).ToList();
+                var tierIPlusOnePlayers =
+                    tierIPlusOne.FindAll(g => g.PlayerOne != null).Select(g => g.PlayerOne).ToList();
                 tierIPlusOnePlayers.AddRange(tierIPlusOne.FindAll(g => g.PlayerTwo != null).Select(g => g.PlayerTwo));
 
-                
-                
-                var unassigned = tierI.FindAll(g => 
+
+                var unassigned = tierI.FindAll(g =>
                     (g.Winner != null && !tierIPlusOnePlayers.Contains(g.Winner))
-                    ).Select(g => g.Winner).ToList();
+                ).Select(g => g.Winner).ToList();
 
                 foreach (var unsign in unassigned)
                 {
@@ -110,12 +141,11 @@ namespace ChampionshipManager.BusinessLayer.Services
                         tournament.Games.Find(g => g.Round == i + 1 && g.PlayerTwo == null)!.PlayerTwo = unsign;
                     }
                 }
-
             }
 
             return tournament;
         }
-        
+
         private List<Game> CreateSpiderGames(Tournament tournament)
         {
             // Create spider bottom
@@ -129,7 +159,7 @@ namespace ChampionshipManager.BusinessLayer.Services
                         Tournament = tournament,
                         Round = 0
                     }
-                    );
+                );
             }
 
             // Fill zero tier with players
@@ -150,7 +180,7 @@ namespace ChampionshipManager.BusinessLayer.Services
             var higherTierGames = new List<Game>();
             for (int i = 0; i < higherTierCount; i++)
             {
-                for (int j = 0; j < Math.Pow(2,i); j++)
+                for (int j = 0; j < Math.Pow(2, i); j++)
                 {
                     higherTierGames.Add(
                         new Game
@@ -160,9 +190,8 @@ namespace ChampionshipManager.BusinessLayer.Services
                         }
                     );
                 }
-                
             }
-            
+
             var result = new List<Game>(tierZeroGames);
             result.AddRange(higherTierGames);
             return result;
@@ -172,13 +201,17 @@ namespace ChampionshipManager.BusinessLayer.Services
         private int HighestSmallerPowerOfTwo(int limit)
         {
             double i = 1;
-            while (((int) i^2) < limit)
+            while (((int) i ^ 2) < limit)
             {
                 i++;
             }
 
-            return (int)i - 1;
+            return (int) i - 1;
+        }
+
+        public List<Game> GetGames(Guid id)
+        {
+            return Repository.Filter(t => t.ID == id, new List<string> {nameof(Tournament.Games)}).Single().Games;
         }
     }
-    
 }

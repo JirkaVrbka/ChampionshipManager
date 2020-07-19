@@ -103,15 +103,7 @@ else
     private string addAllText = "<<";
     
     private bool _editState = false;
-
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     Selected.AddRange(SelectedTournament.Competitors);
-    //     NoSelected.AddRange(ChampionshipService.GetCompetitors(ParentChampionship.ID));
-    //     NoSelected.RemoveAll(x => Selected.Contains(x));
-    //
-    // }
+    
 
     protected override void OnInitialized()
     {
@@ -124,13 +116,20 @@ else
     {
         if (_editState)
         {
-            SelectedTournament.Competitors = Selected;
+            if (!SelectedTournament.Competitors.SequenceEqual(Selected))
+            {
+                SelectedTournament.Competitors = Selected;
 
-            await TournamentService.Edit(SelectedTournament);
-            
-            Selected = new List<Competitor>();
-            NoSelected = new List<Competitor>();
-            
+                await TournamentService.EditChangedCompetitors(SelectedTournament);
+
+                Selected = new List<Competitor>();
+                NoSelected = new List<Competitor>();
+            }
+            else
+            {
+                await TournamentService.Edit(SelectedTournament);
+            }
+
         }
         
         _editState = !_editState;

@@ -6,6 +6,13 @@
 @inject GameService GameService
 
 
+<div style="font-size: large">
+    <a href="/Championship/@ChampionshipId">
+        <button class="oi oi-arrow-left" style="font-size: large;width: 250px">
+            <span style="padding-left: 10px">Back</span>
+        </button>
+    </a>
+</div>
 @switch (Tournament.TournamentType)
 {
     case TournamentType.AgainstEverybody:
@@ -33,5 +40,5 @@
     }
 
 
-    
+
 }
