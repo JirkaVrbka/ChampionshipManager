@@ -1,4 +1,3 @@
-using ChampionshipManager.BusinessLayer.Facades;
 using ChampionshipManager.BusinessLayer.Services;
 using ChampionshipManager.Db.Context;
 using ChampionshipManager.Db.Repository;
@@ -33,7 +32,7 @@ namespace ChampionshipManager.Web
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<ChampionshipManagerContext>(options =>
-                options.UseSqlite("Filename=./manager.db"));
+                options.UseSqlite("Filename=./manager.db"), ServiceLifetime.Scoped);
 
             services.AddDefaultIdentity<IdentityUser>(options =>
                 {
@@ -69,7 +68,6 @@ namespace ChampionshipManager.Web
             services.AddScoped<GameService>();
             services.AddScoped<TeamService>();
 
-            services.AddScoped<TournamentFacade>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -108,11 +108,7 @@
             NoSelected = new List<Competitor>();
 
             var organizerName = await AuthenticationStateProvider.GetUserName();
-
-
-    // Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
-    // NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName));
-    // NoSelected.RemoveAll(x => Selected.Contains(x));
+            
             Selected.AddRange(ChampionshipService.GetCompetitors(SelectedChampionship.ID) ?? new List<Competitor>());
             NoSelected.AddRange(OrganizerService.GetCompetitorsByName(organizerName).Where(c => !Selected.Contains(c)));
 

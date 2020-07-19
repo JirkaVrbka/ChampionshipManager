@@ -47,7 +47,6 @@ app {
 }
 
 .sidebar {
-    /*background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%); TODO remove*/
     background-image: linear-gradient(90deg, #191970 93%, #F0F8FF 100%);
 }
 

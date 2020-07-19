@@ -10,11 +10,8 @@ namespace ChampionshipManager.Db.Repository
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class, IEntity
     {
-        protected readonly ChampionshipManagerContext Context; // => _provider.GetUnitOfWorkInstance();
+        protected readonly ChampionshipManagerContext Context;
 
-        // private readonly IContextProvider _provider;
-        //
-        // public Repository(IContextProvider provider) => _provider = provider;
         public Repository(ChampionshipManagerContext context) => Context = context;
 
         public async Task<Guid> Create(TEntity entity)
@@ -91,7 +88,6 @@ namespace ChampionshipManager.Db.Repository
             return query.AsEnumerable().Where(predicate);
         }
 
-        //public void SaveChanges() => Context.SaveChanges();
         public async Task SaveChangesAsync() => await Context.SaveChangesAsync();
     }
 }

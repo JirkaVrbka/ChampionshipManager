@@ -9,10 +9,6 @@ namespace ChampionshipManager.Db.Repository
         public override List<string> Includes { get; } = new List<string>
             {nameof(Championship.Organizer), nameof(Championship.Tournaments), nameof(Championship.Competitors)};
 
-        // public ChampionshipRepository(IContextProvider provider) : base(provider)
-        // {
-        // }
-
         public ChampionshipRepository(ChampionshipManagerContext context) : base(context)
         {
         }
